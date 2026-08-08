@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, NavLink } from "react-router-dom";
-import { LayoutDashboard, ShoppingCart, Box, MapPin, Users, Banknote, Smartphone, Sparkles, FileText, Truck, Clock } from "lucide-react";
+import { LayoutDashboard, ShoppingCart, Box, MapPin, Users, Banknote, Smartphone, Sparkles, FileText, Truck, Clock, ClipboardCheck } from "lucide-react";
 import BrandMark from "@/components/BrandMark";
 import ThemeToggle from "@/components/ThemeToggle";
 
@@ -10,6 +10,7 @@ const nav = [
   { to: "/produtos", label: "Estoque", icon: Box },
   { to: "/lotes", label: "Lotes & Validade", icon: Clock },
   { to: "/mapa", label: "Mapa da Loja", icon: MapPin },
+  { to: "/inventario", label: "Inventário", icon: ClipboardCheck },
   { to: "/compras", label: "Compras", icon: Truck },
   { to: "/clientes", label: "Clientes", icon: Users },
   { to: "/financeiro", label: "Financeiro", icon: Banknote },

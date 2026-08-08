@@ -1,0 +1,82 @@
+{
+  "name": "InventoryCount",
+  "type": "object",
+  "description": "Contagem de invent\u00e1rio c\u00edclico por zona do mapa da loja.",
+  "properties": {
+    "zone_id": {
+      "type": "string"
+    },
+    "zone_label": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "em_andamento",
+        "finalizada",
+        "cancelada"
+      ],
+      "default": "em_andamento"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "finished_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "operator": {
+      "type": "string"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string"
+          },
+          "product_name": {
+            "type": "string"
+          },
+          "sku": {
+            "type": "string"
+          },
+          "shelf_label": {
+            "type": "string"
+          },
+          "expected": {
+            "type": "number"
+          },
+          "counted": {
+            "type": "number"
+          },
+          "diff": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "items_count": {
+      "type": "number",
+      "default": 0
+    },
+    "divergences": {
+      "type": "number",
+      "default": 0
+    },
+    "value_diff": {
+      "type": "number",
+      "default": 0,
+      "description": "Impacto financeiro da diverg\u00eancia (custo)"
+    },
+    "note": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "zone_id",
+    "status"
+  ]
+}

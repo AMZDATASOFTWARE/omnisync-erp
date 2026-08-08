@@ -422,7 +422,7 @@ Vendedor: "tem café pilão 500g? onde fica?"
 
 ### Fase 5 — Backlog arquitetural
 - ✅ `StockBatch` com consumo FEFO e alertas de validade: tela `/lotes` (registro de lote, saldo, bloqueio, painel de vencidos e a vencer em 30 dias), regras em `shared/batch.js` e baixa via `consumeStockFEFO` (dry-run + alocação lote a lote, com ajuste do saldo do produto). Agente conectado com leitura/escrita de `StockBatch` e a ferramenta FEFO.
-- Inventário cíclico assistido por zona (contagem guiada pelo mapa).
+- ✅ Inventário cíclico assistido por zona: tela `/inventario` com seleção de zona do mapa, folha de contagem (saldo do sistema × contado, divergência em tempo real), ajuste automático do `stock_quantity` ao finalizar e histórico com impacto financeiro (`InventoryCount`). Agente conectado com leitura/escrita da entidade.
 - Workflows: alerta de ruptura, resumo diário de vendas, cobrança de contas a vencer.
 - Multi-loja: `store_id` transversal + RLS por unidade.
 - Relatórios: DRE gerencial, curva ABC, giro por zona.
@@ -444,5 +444,6 @@ Vendedor: "tem café pilão 500g? onde fica?"
 |---|---|---|
 | Catálogo > 5.000 SKUs no Mobile | Memória/tempo de carga | Cache local + paginação por cursor + índice por prefixo |
 | Rejeição fiscal por NCM incorreto | Venda sem documento | Validação de NCM no cadastro + fila de reprocessamento |
-| Divergência entre estoque e físico | Ruptura invisível | Inventário cíclico por zona (Fase 5) |
+| Divergência entre estoque e físico | Ruptura invisível | ✅ Inventário cíclico por zona (`/inventario`) |
+| NCM/CEST incorretos no cadastro | Rejeição fiscal | `lookupProductData` (Cosmos Bluesoft + NCM/TIPI) no cadastro e no agente |
 | Mapa desatualizado após remanejo | IA responde local errado | Registro de `updated_date` por zona + alerta de zona sem revisão |
