@@ -35,7 +35,8 @@ export default function MapaLoja() {
 
   if (loading) return <div className="p-8 text-slate-400 text-sm">Carregando mapa da loja…</div>;
 
-  const selectedZone = (map.zones || []).find((z) => z.id === selectedZoneId);
+  const zones = map.zones || [];
+  const selectedZone = zones.find((z) => z.id === selectedZoneId) || zones[0];
 
   return (
     <div className="p-6 md:p-8 space-y-5">
