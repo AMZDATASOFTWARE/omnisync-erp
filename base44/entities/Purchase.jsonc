@@ -1,0 +1,54 @@
+{
+  "name": "Purchase",
+  "type": "object",
+  "properties": {
+    "supplier_id": {
+      "type": "string"
+    },
+    "supplier_name": {
+      "type": "string"
+    },
+    "invoice_number": {
+      "type": "string",
+      "description": "N\u00famero da nota do fornecedor"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "cost": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "total": {
+      "type": "number"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "recebida",
+        "cancelada"
+      ],
+      "default": "recebida"
+    }
+  },
+  "required": [
+    "total"
+  ]
+}

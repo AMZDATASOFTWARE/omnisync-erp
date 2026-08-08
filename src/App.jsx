@@ -17,6 +17,7 @@ import Financeiro from '@/pages/Financeiro';
 import Mobile from '@/pages/Mobile';
 import Assistente from '@/pages/Assistente';
 import Fiscal from '@/pages/Fiscal';
+import Compras from '@/pages/Compras';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -54,6 +55,7 @@ const AuthenticatedApp = () => {
         <Route path="/financeiro" element={<Financeiro />} />
         <Route path="/assistente" element={<Assistente />} />
         <Route path="/fiscal" element={<Fiscal />} />
+        <Route path="/compras" element={<Compras />} />
       </Route>
       <Route path="/mobile" element={<Mobile />} />
       <Route path="*" element={<PageNotFound />} />
