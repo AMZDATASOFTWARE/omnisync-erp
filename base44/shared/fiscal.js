@@ -17,28 +17,50 @@ const PAYMENT_CODES = {
   pix: "17",
 };
 
-export function buildFiscalPayload(sale, products, config = {}) {
+// Resolve a regra tributária: TaxRule[NCM+UF] → TaxRule[NCM, todas UFs] → null.
+export function resolveTaxRule(ncm, uf, taxRules = []) {
+  const actives = taxRules.filter((r) => r.active !== false && r.ncm === ncm);
+  const byUf = actives.find((r) => (r.uf || "").toUpperCase() === (uf || "").toUpperCase() && r.uf);
+  return byUf || actives.find((r) => !r.uf || r.uf === "*") || null;
+}
+
+export function buildFiscalPayload(sale, products, config = {}, taxRules = []) {
   const regime = config.regime || "simples_nacional";
   const rules = REGIMES[regime] || REGIMES.simples_nacional;
+  const uf = config.uf || "CE";
 
   const items = (sale.items || []).map((item, idx) => {
     const product = products.find((p) => p.id === item.product_id) || {};
     const total = (item.price || 0) * (item.quantity || 0);
+    const ncm = product.ncm || "00000000";
+    const rule = resolveTaxRule(ncm, uf, taxRules);
+    const aliquota = rule ? (Number(rule.aliquota_icms) || 0) / 100 : rules.aliquota_efetiva;
+    const tributos = regime === "simples_nacional"
+      ? { csosn: rule?.csosn || rules.csosn, valor_icms: 0 }
+      : {
+          cst: rule?.cst_icms || rules.cst,
+          aliquota_icms: aliquota,
+          valor_icms: Number((total * aliquota).toFixed(2)),
+        };
+    if (rule) {
+      tributos.regra_id = rule.id || null;
+      if (rule.aliquota_pis) tributos.valor_pis = Number((total * (rule.aliquota_pis / 100)).toFixed(2));
+      if (rule.aliquota_cofins) tributos.valor_cofins = Number((total * (rule.aliquota_cofins / 100)).toFixed(2));
+      if (rule.substituicao_tributaria) tributos.substituicao_tributaria = true;
+    }
     return {
       numero: idx + 1,
       codigo: product.sku || item.product_id || String(idx + 1),
       descricao: item.name || product.name,
-      ncm: product.ncm || "00000000",
-      cest: product.cest || "",
-      cfop: CFOP_VENDA_INTERNA,
+      ncm,
+      cest: rule?.cest || product.cest || "",
+      cfop: rule?.cfop || CFOP_VENDA_INTERNA,
       origem: ORIGEM_NACIONAL,
       unidade: product.unit || "un",
       quantidade: item.quantity || 0,
       valor_unitario: item.price || 0,
       valor_total: Number(total.toFixed(2)),
-      tributos: regime === "simples_nacional"
-        ? { csosn: rules.csosn, valor_icms: 0 }
-        : { cst: rules.cst, aliquota_icms: rules.aliquota_efetiva, valor_icms: Number((total * rules.aliquota_efetiva).toFixed(2)) },
+      tributos,
     };
   });
 

@@ -416,7 +416,7 @@ Vendedor: "tem café pilão 500g? onde fica?"
 - **4a ✅** Agente `loja_assistente` com `get_product_info` e `get_product_location`; chat web.
 - **4b ✅** Motor fiscal com payload canônico, `emitFiscalDocument`, `FiscalConfig` e emissão automática no fechamento da venda (driver `sandbox`).
 - **4c 🔄** Driver SEFAZ real (NFC-e/NF-e) + SAT; certificado A1 via secret.
-- **4d 🔄** Tabela de tributação por NCM/UF substituindo a regra simplificada.
+- **4d ✅** Tabela de tributação por NCM/UF (`TaxRule`, tela `/tributacao`): CFOP, CSOSN/CST, alíquotas de ICMS/PIS/COFINS, CEST e marcação de ST por NCM. `buildFiscalPayload` resolve via `resolveTaxRule` na ordem NCM+UF → NCM (todas UFs) → padrão do regime, e `emitFiscalDocument` carrega as regras na emissão. Agente conectado com leitura/escrita de `TaxRule`.
 - **4e 🔄** Canal WhatsApp do agente + imagem de localização gerada server-side.
 - **Critério de aceite:** documento autorizado pela SEFAZ em homologação e reprocessamento de fila sem duplicidade.
 

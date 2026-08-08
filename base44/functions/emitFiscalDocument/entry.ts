@@ -23,7 +23,8 @@ export default async function (req) {
     const products = await base44.entities.Product.list('name', 500);
     const configs = await base44.entities.FiscalConfig.list('-created_date', 1);
     const config = configs[0] || {};
-    const payload = buildFiscalPayload(sale, products, config);
+    const taxRules = await base44.entities.TaxRule.list('ncm', 500).catch(() => []);
+    const payload = buildFiscalPayload(sale, products, config, taxRules);
 
     const errors = validatePayload(payload);
     if (errors.length) {

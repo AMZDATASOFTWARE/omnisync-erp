@@ -22,6 +22,7 @@ import Lotes from '@/pages/Lotes';
 import Inventario from '@/pages/Inventario';
 import Relatorios from '@/pages/Relatorios';
 import Lojas from '@/pages/Lojas';
+import Tributacao from '@/pages/Tributacao';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -64,6 +65,7 @@ const AuthenticatedApp = () => {
         <Route path="/inventario" element={<Inventario />} />
         <Route path="/relatorios" element={<Relatorios />} />
         <Route path="/lojas" element={<Lojas />} />
+        <Route path="/tributacao" element={<Tributacao />} />
       </Route>
       <Route path="/mobile" element={<Mobile />} />
       <Route path="*" element={<PageNotFound />} />

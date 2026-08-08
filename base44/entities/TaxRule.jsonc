@@ -1,0 +1,62 @@
+{
+  "name": "TaxRule",
+  "type": "object",
+  "description": "Regra de tributa\u00e7\u00e3o por NCM e UF. Resolve CFOP, CST/CSOSN e al\u00edquotas na emiss\u00e3o fiscal.",
+  "properties": {
+    "ncm": {
+      "type": "string",
+      "description": "NCM de 8 d\u00edgitos"
+    },
+    "uf": {
+      "type": "string",
+      "description": "UF de destino; vazio ou '*' = todas"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descri\u00e7\u00e3o da regra"
+    },
+    "cfop": {
+      "type": "string",
+      "description": "CFOP de sa\u00edda (ex: 5102, 5405)"
+    },
+    "csosn": {
+      "type": "string",
+      "description": "CSOSN para Simples Nacional (ex: 102, 500)"
+    },
+    "cst_icms": {
+      "type": "string",
+      "description": "CST ICMS para Regime Normal (ex: 00, 60)"
+    },
+    "aliquota_icms": {
+      "type": "number",
+      "default": 0,
+      "description": "Al\u00edquota de ICMS em % (ex: 18)"
+    },
+    "aliquota_pis": {
+      "type": "number",
+      "default": 0
+    },
+    "aliquota_cofins": {
+      "type": "number",
+      "default": 0
+    },
+    "cest": {
+      "type": "string"
+    },
+    "substituicao_tributaria": {
+      "type": "boolean",
+      "default": false
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
+    "source": {
+      "type": "string",
+      "description": "Origem do dado (ex: TIPI, Conv\u00eanio 142/2018, manual)"
+    }
+  },
+  "required": [
+    "ncm"
+  ]
+}
