@@ -6,7 +6,7 @@ import { format } from "date-fns";
 
 const brl = (v) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v || 0);
 
-export default function SaleFiscalRow({ sale, emitting, onEmit, onCancel, onCorrect, onPrint }) {
+export default function SaleFiscalRow({ sale, emitting, onEmit, onCancel, onCorrect, onPrint, onEmitNfe }) {
   const emitida = sale.fiscal_status === "emitida";
   const cancelada = sale.fiscal_status === "cancelada";
   return (
@@ -23,7 +23,9 @@ export default function SaleFiscalRow({ sale, emitting, onEmit, onCancel, onCorr
           </div>
         ) : emitida ? (
           <div className="space-y-0.5">
-            <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">NFC-e {sale.fiscal_number}</Badge>
+            <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">
+              {sale.fiscal_modelo === "55" ? "NF-e" : "NFC-e"} {sale.fiscal_number}
+            </Badge>
             <p className="text-[10px] text-muted-foreground font-mono">{sale.fiscal_key}</p>
           </div>
         ) : sale.fiscal_error ? (
@@ -38,7 +40,12 @@ export default function SaleFiscalRow({ sale, emitting, onEmit, onCancel, onCorr
         {!emitida && !cancelada && (
           <Button size="sm" variant="outline" disabled={emitting} onClick={() => onEmit(sale)}>
             {emitting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileCheck2 className="w-3.5 h-3.5" />}
-            Emitir
+            Emitir NFC-e
+          </Button>
+        )}
+        {!emitida && !cancelada && (
+          <Button size="sm" variant="ghost" disabled={emitting} onClick={() => onEmitNfe(sale)}>
+            <FileCheck2 className="w-3.5 h-3.5" /> NF-e
           </Button>
         )}
         {(emitida || cancelada) && (

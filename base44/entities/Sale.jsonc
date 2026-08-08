@@ -45,6 +45,10 @@
     "customer_name": {
       "type": "string"
     },
+    "customer_cpf_cnpj": {
+      "type": "string",
+      "description": "CPF/CNPJ do destinat\u00e1rio (obrigat\u00f3rio para NF-e modelo 55)"
+    },
     "cash_session_id": {
       "type": "string"
     },
@@ -65,7 +69,16 @@
         "nao_aplicavel"
       ],
       "default": "pendente",
-      "description": "Status da NFC-e"
+      "description": "Status do documento fiscal"
+    },
+    "fiscal_modelo": {
+      "type": "string",
+      "enum": [
+        "65",
+        "55"
+      ],
+      "default": "65",
+      "description": "Modelo do documento fiscal: 65 = NFC-e, 55 = NF-e"
     },
     "fiscal_number": {
       "type": "string",

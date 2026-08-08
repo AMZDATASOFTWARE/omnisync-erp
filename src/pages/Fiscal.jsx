@@ -10,6 +10,7 @@ import CorrectionDialog from "@/components/fiscal/CorrectionDialog";
 import VoidNumbersDialog from "@/components/fiscal/VoidNumbersDialog";
 import FiscalExportCard from "@/components/fiscal/FiscalExportCard";
 import DanfeDialog from "@/components/fiscal/DanfeDialog";
+import NfeDialog from "@/components/fiscal/NfeDialog";
 import { Button } from "@/components/ui/button";
 import { Receipt, RefreshCw } from "lucide-react";
 
@@ -23,6 +24,7 @@ export default function Fiscal() {
   const [correctTarget, setCorrectTarget] = useState(null);
   const [voidOpen, setVoidOpen] = useState(false);
   const [printTarget, setPrintTarget] = useState(null);
+  const [nfeTarget, setNfeTarget] = useState(null);
   const [events, setEvents] = useState([]);
   const { toast } = useToast();
 
@@ -54,6 +56,21 @@ export default function Fiscal() {
     const data = res.data || {};
     toast({
       title: data.success ? "Documento emitido" : "Não foi possível emitir",
+      description: data.message,
+      variant: data.success ? undefined : "destructive",
+    });
+    setEmittingId(null);
+    await load();
+  };
+
+  const handleEmitNfe = async (destinatario) => {
+    setEmittingId(nfeTarget.id);
+    const res = await base44.functions.invoke("emitFiscalDocument", {
+      sale_id: nfeTarget.id, modelo: "55", destinatario,
+    });
+    const data = res.data || {};
+    toast({
+      title: data.success ? "NF-e emitida" : "Não foi possível emitir a NF-e",
       description: data.message,
       variant: data.success ? undefined : "destructive",
     });
@@ -149,7 +166,7 @@ export default function Fiscal() {
             ) : (
               sales.map((s) => (
                 <SaleFiscalRow key={s.id} sale={s} emitting={emittingId === s.id} onEmit={handleEmit}
-                  onCancel={setCancelTarget} onCorrect={setCorrectTarget} onPrint={setPrintTarget} />
+                  onCancel={setCancelTarget} onCorrect={setCorrectTarget} onPrint={setPrintTarget} onEmitNfe={setNfeTarget} />
               ))
             )}
           </tbody>
@@ -165,6 +182,8 @@ export default function Fiscal() {
       <CorrectionDialog open={!!correctTarget} onOpenChange={(v) => !v && setCorrectTarget(null)}
         onConfirm={handleCorrect} />
       <VoidNumbersDialog open={voidOpen} onOpenChange={setVoidOpen} onConfirm={handleVoid} />
+      <NfeDialog sale={nfeTarget} open={!!nfeTarget}
+        onOpenChange={(v) => !v && setNfeTarget(null)} onConfirm={handleEmitNfe} />
       <DanfeDialog sale={printTarget} config={config} open={!!printTarget}
         onOpenChange={(v) => !v && setPrintTarget(null)} />
     </div>

@@ -38,7 +38,7 @@ export default function DanfeDialog({ sale, config, open, onOpenChange }) {
             <div>UF {config?.uf || "—"}</div>
           </div>
           <hr />
-          <div className="c b">DOCUMENTO AUXILIAR DA NFC-e</div>
+          <div className="c b">DOCUMENTO AUXILIAR DA {sale.fiscal_modelo === "55" ? "NF-e" : "NFC-e"}</div>
           <div className="c">Nº {sale.fiscal_number || "—"} · {format(new Date(sale.created_date), "dd/MM/yyyy HH:mm")}</div>
           <hr />
           <table>
@@ -57,6 +57,9 @@ export default function DanfeDialog({ sale, config, open, onOpenChange }) {
               <tr className="b"><td>TOTAL</td><td className="r">{brl(sale.total)}</td></tr>
               <tr><td>Pagamento</td><td className="r">{sale.payment_method}</td></tr>
               <tr><td>Cliente</td><td className="r">{sale.customer_name || "CONSUMIDOR"}</td></tr>
+              {sale.customer_cpf_cnpj && (
+                <tr><td>CPF/CNPJ</td><td className="r">{sale.customer_cpf_cnpj}</td></tr>
+              )}
             </tbody>
           </table>
           <hr />

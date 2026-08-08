@@ -24,7 +24,7 @@ export function resolveTaxRule(ncm, uf, taxRules = []) {
   return byUf || actives.find((r) => !r.uf || r.uf === "*") || null;
 }
 
-export function buildFiscalPayload(sale, products, config = {}, taxRules = []) {
+export function buildFiscalPayload(sale, products, config = {}, taxRules = [], modelo = "65") {
   const regime = config.regime || "simples_nacional";
   const rules = REGIMES[regime] || REGIMES.simples_nacional;
   const uf = config.uf || "CE";
@@ -67,8 +67,8 @@ export function buildFiscalPayload(sale, products, config = {}, taxRules = []) {
   const total = Number(items.reduce((s, i) => s + i.valor_total, 0).toFixed(2));
 
   return {
-    modelo: "65", // NFC-e
-    natureza_operacao: "Venda ao consumidor",
+    modelo, // 65 = NFC-e (consumidor) · 55 = NF-e (destinatário identificado)
+    natureza_operacao: modelo === "55" ? "Venda de mercadoria" : "Venda ao consumidor",
     regime_tributario: regime,
     emitente: {
       cnpj: config.cnpj || "",
@@ -76,7 +76,9 @@ export function buildFiscalPayload(sale, products, config = {}, taxRules = []) {
       inscricao_estadual: config.inscricao_estadual || "",
       uf: config.uf || "CE",
     },
-    destinatario: sale.customer_name ? { nome: sale.customer_name } : null,
+    destinatario: sale.customer_name || sale.customer_cpf_cnpj
+      ? { nome: sale.customer_name || "", cpf_cnpj: (sale.customer_cpf_cnpj || "").replace(/\D/g, "") }
+      : null,
     itens: items,
     pagamentos: [{ forma: PAYMENT_CODES[sale.payment_method] || "99", valor: sale.total ?? total }],
     totais: { valor_produtos: total, valor_total: sale.total ?? total },
@@ -88,6 +90,12 @@ export function validatePayload(payload) {
   const errors = [];
   if (!payload.itens.length) errors.push("Venda sem itens.");
   if (payload.totais.valor_total <= 0) errors.push("Valor total inválido.");
+  if (payload.modelo === "55") {
+    const doc = payload.destinatario?.cpf_cnpj || "";
+    if (!payload.destinatario?.nome) errors.push("NF-e (modelo 55) exige destinatário identificado.");
+    if (doc.length !== 11 && doc.length !== 14)
+      errors.push("NF-e (modelo 55) exige CPF (11 dígitos) ou CNPJ (14 dígitos) do destinatário.");
+  }
   payload.itens.forEach((i) => {
     if (!/^\d{8}$/.test(i.ncm)) errors.push(`Produto "${i.descricao}" está sem NCM válido (8 dígitos).`);
   });
