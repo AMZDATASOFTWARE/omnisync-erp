@@ -420,7 +420,7 @@ Vendedor: "tem café pilão 500g? onde fica?"
 - **Critério de aceite:** documento autorizado pela SEFAZ em homologação e reprocessamento de fila sem duplicidade.
 
 ### Fase 5 — Backlog arquitetural
-- `StockBatch` com consumo FEFO e alertas de validade.
+- ✅ `StockBatch` com consumo FEFO e alertas de validade: tela `/lotes` (registro de lote, saldo, bloqueio, painel de vencidos e a vencer em 30 dias), regras em `shared/batch.js` e baixa via `consumeStockFEFO` (dry-run + alocação lote a lote, com ajuste do saldo do produto). Agente conectado com leitura/escrita de `StockBatch` e a ferramenta FEFO.
 - Inventário cíclico assistido por zona (contagem guiada pelo mapa).
 - Workflows: alerta de ruptura, resumo diário de vendas, cobrança de contas a vencer.
 - Multi-loja: `store_id` transversal + RLS por unidade.

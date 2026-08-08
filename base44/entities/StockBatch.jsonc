@@ -1,0 +1,71 @@
+{
+  "name": "StockBatch",
+  "type": "object",
+  "description": "Lote de estoque com validade, para consumo FEFO (primeiro a vencer, primeiro a sair).",
+  "properties": {
+    "product_id": {
+      "type": "string"
+    },
+    "product_name": {
+      "type": "string"
+    },
+    "sku": {
+      "type": "string"
+    },
+    "lot_code": {
+      "type": "string",
+      "description": "C\u00f3digo do lote do fabricante"
+    },
+    "expiry_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Data de validade"
+    },
+    "quantity": {
+      "type": "number",
+      "default": 0,
+      "description": "Saldo atual do lote"
+    },
+    "initial_quantity": {
+      "type": "number",
+      "description": "Quantidade recebida"
+    },
+    "cost": {
+      "type": "number",
+      "description": "Custo unit\u00e1rio do lote"
+    },
+    "zone_id": {
+      "type": "string",
+      "description": "Zona do mapa onde o lote est\u00e1"
+    },
+    "shelf_label": {
+      "type": "string"
+    },
+    "supplier_id": {
+      "type": "string"
+    },
+    "supplier_name": {
+      "type": "string"
+    },
+    "purchase_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ativo",
+        "esgotado",
+        "vencido",
+        "bloqueado"
+      ],
+      "default": "ativo"
+    },
+    "note": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "product_id",
+    "quantity"
+  ]
+}

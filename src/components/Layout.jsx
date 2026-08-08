@@ -1,12 +1,13 @@
 import React from "react";
 import { Outlet, NavLink } from "react-router-dom";
-import { LayoutDashboard, ShoppingCart, Package, Map, Users, Wallet, Smartphone, Sparkles, Receipt, Truck } from "lucide-react";
+import { LayoutDashboard, ShoppingCart, Package, Map, Users, Wallet, Smartphone, Sparkles, Receipt, Truck, CalendarClock } from "lucide-react";
 
 const nav = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/pdv", label: "PDV — Caixa", icon: ShoppingCart },
   { to: "/produtos", label: "Estoque", icon: Package },
   { to: "/mapa", label: "Mapa da Loja", icon: Map },
+  { to: "/lotes", label: "Lotes & Validade", icon: CalendarClock },
   { to: "/compras", label: "Compras", icon: Truck },
   { to: "/clientes", label: "Clientes", icon: Users },
   { to: "/financeiro", label: "Financeiro", icon: Wallet },
