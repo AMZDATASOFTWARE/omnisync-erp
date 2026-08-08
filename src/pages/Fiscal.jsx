@@ -5,6 +5,9 @@ import SaleFiscalRow from "@/components/fiscal/SaleFiscalRow";
 import FiscalConfigCard from "@/components/fiscal/FiscalConfigCard";
 import CancelDialog from "@/components/fiscal/CancelDialog";
 import FiscalPendencies from "@/components/fiscal/FiscalPendencies";
+import FiscalEventsCard from "@/components/fiscal/FiscalEventsCard";
+import CorrectionDialog from "@/components/fiscal/CorrectionDialog";
+import VoidNumbersDialog from "@/components/fiscal/VoidNumbersDialog";
 import { Button } from "@/components/ui/button";
 import { Receipt, RefreshCw } from "lucide-react";
 
@@ -15,14 +18,19 @@ export default function Fiscal() {
   const [config, setConfig] = useState(null);
   const [cancelTarget, setCancelTarget] = useState(null);
   const [reprocessing, setReprocessing] = useState(false);
+  const [correctTarget, setCorrectTarget] = useState(null);
+  const [voidOpen, setVoidOpen] = useState(false);
+  const [events, setEvents] = useState([]);
   const { toast } = useToast();
 
   const load = async () => {
-    const [data, configs] = await Promise.all([
+    const [data, configs, evts] = await Promise.all([
       base44.entities.Sale.filter({ status: "concluida" }, "-created_date", 100),
       base44.entities.FiscalConfig.list("-created_date", 1),
+      base44.entities.FiscalEvent.list("-created_date", 50),
     ]);
     setSales(data);
+    setEvents(evts);
     setConfig(configs[0] || {});
     setLoading(false);
   };
@@ -57,6 +65,30 @@ export default function Fiscal() {
     const data = res.data || {};
     toast({
       title: data.success ? "Documento cancelado" : "Não foi possível cancelar",
+      description: data.message,
+      variant: data.success ? undefined : "destructive",
+    });
+    await load();
+  };
+
+  const handleCorrect = async (texto) => {
+    const res = await base44.functions.invoke("correctFiscalDocument", {
+      sale_id: correctTarget.id, correcao: texto,
+    });
+    const data = res.data || {};
+    toast({
+      title: data.success ? "Carta de correção registrada" : "Não foi possível registrar",
+      description: data.message,
+      variant: data.success ? undefined : "destructive",
+    });
+    await load();
+  };
+
+  const handleVoid = async (form) => {
+    const res = await base44.functions.invoke("voidFiscalNumbers", form);
+    const data = res.data || {};
+    toast({
+      title: data.success ? "Numeração inutilizada" : "Não foi possível inutilizar",
       description: data.message,
       variant: data.success ? undefined : "destructive",
     });
@@ -114,15 +146,20 @@ export default function Fiscal() {
             ) : (
               sales.map((s) => (
                 <SaleFiscalRow key={s.id} sale={s} emitting={emittingId === s.id} onEmit={handleEmit}
-                  onCancel={setCancelTarget} />
+                  onCancel={setCancelTarget} onCorrect={setCorrectTarget} />
               ))
             )}
           </tbody>
         </table>
       </div>
 
+      <FiscalEventsCard events={events} onVoid={() => setVoidOpen(true)} />
+
       <CancelDialog open={!!cancelTarget} onOpenChange={(v) => !v && setCancelTarget(null)}
         title="Cancelar NFC-e" onConfirm={handleCancel} />
+      <CorrectionDialog open={!!correctTarget} onOpenChange={(v) => !v && setCorrectTarget(null)}
+        onConfirm={handleCorrect} />
+      <VoidNumbersDialog open={voidOpen} onOpenChange={setVoidOpen} onConfirm={handleVoid} />
     </div>
   );
 }

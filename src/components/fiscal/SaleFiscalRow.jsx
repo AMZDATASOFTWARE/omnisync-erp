@@ -1,12 +1,12 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, FileCheck2, AlertTriangle, Ban } from "lucide-react";
+import { Loader2, FileCheck2, AlertTriangle, Ban, FileSignature } from "lucide-react";
 import { format } from "date-fns";
 
 const brl = (v) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v || 0);
 
-export default function SaleFiscalRow({ sale, emitting, onEmit, onCancel }) {
+export default function SaleFiscalRow({ sale, emitting, onEmit, onCancel, onCorrect }) {
   const emitida = sale.fiscal_status === "emitida";
   const cancelada = sale.fiscal_status === "cancelada";
   return (
@@ -39,6 +39,11 @@ export default function SaleFiscalRow({ sale, emitting, onEmit, onCancel }) {
           <Button size="sm" variant="outline" disabled={emitting} onClick={() => onEmit(sale)}>
             {emitting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileCheck2 className="w-3.5 h-3.5" />}
             Emitir
+          </Button>
+        )}
+        {emitida && (
+          <Button size="sm" variant="ghost" onClick={() => onCorrect(sale)}>
+            <FileSignature className="w-3.5 h-3.5" /> CC-e
           </Button>
         )}
         {emitida && (
