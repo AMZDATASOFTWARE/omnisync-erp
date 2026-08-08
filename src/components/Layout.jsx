@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, NavLink } from "react-router-dom";
-import { LayoutDashboard, ShoppingCart, Package, Map, Users, Wallet, Smartphone, Sparkles } from "lucide-react";
+import { LayoutDashboard, ShoppingCart, Package, Map, Users, Wallet, Smartphone, Sparkles, Receipt } from "lucide-react";
 
 const nav = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -9,6 +9,7 @@ const nav = [
   { to: "/mapa", label: "Mapa da Loja", icon: Map },
   { to: "/clientes", label: "Clientes", icon: Users },
   { to: "/financeiro", label: "Financeiro", icon: Wallet },
+  { to: "/fiscal", label: "Fiscal", icon: Receipt },
   { to: "/mobile", label: "Consulta Rápida", icon: Smartphone },
   { to: "/assistente", label: "Assistente IA", icon: Sparkles },
 ];

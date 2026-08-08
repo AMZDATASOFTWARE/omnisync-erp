@@ -1,0 +1,97 @@
+// Motor fiscal (SDD Parte 3): payload canônico + driver pattern.
+// O payload é independente do emissor; cada driver traduz para o formato do provedor.
+
+const CFOP_VENDA_INTERNA = "5102";
+const ORIGEM_NACIONAL = "0";
+
+// Regra tributária simplificada por regime. Substituir por tabela por NCM quando houver credenciais reais.
+const REGIMES = {
+  simples_nacional: { csosn: "102", aliquota_efetiva: 0 },
+  regime_normal: { cst: "00", aliquota_efetiva: 0.18 },
+};
+
+const PAYMENT_CODES = {
+  dinheiro: "01",
+  credito: "03",
+  debito: "04",
+  pix: "17",
+};
+
+export function buildFiscalPayload(sale, products, config = {}) {
+  const regime = config.regime || "simples_nacional";
+  const rules = REGIMES[regime] || REGIMES.simples_nacional;
+
+  const items = (sale.items || []).map((item, idx) => {
+    const product = products.find((p) => p.id === item.product_id) || {};
+    const total = (item.price || 0) * (item.quantity || 0);
+    return {
+      numero: idx + 1,
+      codigo: product.sku || item.product_id || String(idx + 1),
+      descricao: item.name || product.name,
+      ncm: product.ncm || "00000000",
+      cest: product.cest || "",
+      cfop: CFOP_VENDA_INTERNA,
+      origem: ORIGEM_NACIONAL,
+      unidade: product.unit || "un",
+      quantidade: item.quantity || 0,
+      valor_unitario: item.price || 0,
+      valor_total: Number(total.toFixed(2)),
+      tributos: regime === "simples_nacional"
+        ? { csosn: rules.csosn, valor_icms: 0 }
+        : { cst: rules.cst, aliquota_icms: rules.aliquota_efetiva, valor_icms: Number((total * rules.aliquota_efetiva).toFixed(2)) },
+    };
+  });
+
+  const total = Number(items.reduce((s, i) => s + i.valor_total, 0).toFixed(2));
+
+  return {
+    modelo: "65", // NFC-e
+    natureza_operacao: "Venda ao consumidor",
+    regime_tributario: regime,
+    emitente: {
+      cnpj: config.cnpj || "",
+      razao_social: config.razao_social || "",
+      inscricao_estadual: config.inscricao_estadual || "",
+      uf: config.uf || "CE",
+    },
+    destinatario: sale.customer_name ? { nome: sale.customer_name } : null,
+    itens: items,
+    pagamentos: [{ forma: PAYMENT_CODES[sale.payment_method] || "99", valor: sale.total ?? total }],
+    totais: { valor_produtos: total, valor_total: sale.total ?? total },
+    referencia_interna: sale.id,
+  };
+}
+
+export function validatePayload(payload) {
+  const errors = [];
+  if (!payload.itens.length) errors.push("Venda sem itens.");
+  if (payload.totais.valor_total <= 0) errors.push("Valor total inválido.");
+  payload.itens.forEach((i) => {
+    if (!/^\d{8}$/.test(i.ncm)) errors.push(`Produto "${i.descricao}" está sem NCM válido (8 dígitos).`);
+  });
+  return errors;
+}
+
+// --- Drivers ---------------------------------------------------------------
+// Cada driver expõe emit(payload) => { success, numero, chave, protocolo, xml_url, message }
+
+const sandboxDriver = {
+  name: "sandbox",
+  async emit(payload) {
+    const numero = Math.floor(100000 + Math.random() * 899999);
+    const chave = String(numero).padStart(6, "0") + Date.now().toString().slice(-38).padStart(38, "0");
+    return {
+      success: true,
+      numero: String(numero),
+      chave: chave.slice(0, 44),
+      protocolo: "SANDBOX-" + Date.now(),
+      message: "Documento emitido no ambiente de homologação (sandbox).",
+    };
+  },
+};
+
+export function getDriver(name) {
+  // Novos emissores (Focus NFe, NFe.io, TecnoSpeed) entram aqui sem alterar o restante do sistema.
+  const drivers = { sandbox: sandboxDriver };
+  return drivers[name] || sandboxDriver;
+}
