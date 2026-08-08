@@ -1,0 +1,44 @@
+{
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "cobranca_de_contas",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "check_due_entries": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "alertDueEntries"
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Verificar vencimentos",
+            "description": "Vencidas e a vencer em 7 dias"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Cobran\u00e7a de Contas a Vencer",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 7 * * *",
+      "one_time_date": null,
+      "timezone": "America/Belem",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Todo dia \u00e0s 7h, marca contas vencidas e alerta sobre vencimentos nos pr\u00f3ximos 7 dias."
+}

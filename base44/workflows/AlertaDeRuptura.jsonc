@@ -1,0 +1,44 @@
+{
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "alerta_de_ruptura",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "check_stockouts": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "alertStockouts"
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Verificar ruptura",
+            "description": "Produtos abaixo do m\u00ednimo"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Alerta de Ruptura",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 8 * * *",
+      "one_time_date": null,
+      "timezone": "America/Belem",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Todo dia \u00e0s 8h, avisa os administradores sobre produtos abaixo do estoque m\u00ednimo."
+}

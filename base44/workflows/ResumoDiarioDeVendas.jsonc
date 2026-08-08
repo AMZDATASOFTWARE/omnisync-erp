@@ -1,0 +1,44 @@
+{
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "resumo_diario_de_vendas",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "send_digest": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "dailySalesDigest"
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Enviar resumo do dia",
+            "description": "Faturamento e ticket m\u00e9dio"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Resumo Di\u00e1rio de Vendas",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 20 * * *",
+      "one_time_date": null,
+      "timezone": "America/Belem",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Todo dia \u00e0s 20h, envia aos administradores o resumo de faturamento, ticket m\u00e9dio e pend\u00eancias fiscais."
+}

@@ -131,6 +131,15 @@
         "create",
         "update"
       ]
+    },
+    {
+      "entity_name": "InventoryCount",
+      "allowed_operations": [
+        "read",
+        "create",
+        "update",
+        "delete"
+      ]
     }
   ],
   "context_files": [],

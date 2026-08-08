@@ -423,7 +423,7 @@ Vendedor: "tem café pilão 500g? onde fica?"
 ### Fase 5 — Backlog arquitetural
 - ✅ `StockBatch` com consumo FEFO e alertas de validade: tela `/lotes` (registro de lote, saldo, bloqueio, painel de vencidos e a vencer em 30 dias), regras em `shared/batch.js` e baixa via `consumeStockFEFO` (dry-run + alocação lote a lote, com ajuste do saldo do produto). Agente conectado com leitura/escrita de `StockBatch` e a ferramenta FEFO.
 - ✅ Inventário cíclico assistido por zona: tela `/inventario` com seleção de zona do mapa, folha de contagem (saldo do sistema × contado, divergência em tempo real), ajuste automático do `stock_quantity` ao finalizar e histórico com impacto financeiro (`InventoryCount`). Agente conectado com leitura/escrita da entidade.
-- Workflows: alerta de ruptura, resumo diário de vendas, cobrança de contas a vencer.
+- ✅ Workflows agendados (e-mail aos administradores, via `shared/notify.js`): **Alerta de Ruptura** (08h, `alertStockouts`), **Resumo Diário de Vendas** (20h, `dailySalesDigest` — faturamento, ticket médio, mix de pagamento e pendência fiscal) e **Cobrança de Contas a Vencer** (07h, `alertDueEntries` — marca vencidas e alerta os 7 dias seguintes).
 - Multi-loja: `store_id` transversal + RLS por unidade.
 - Relatórios: DRE gerencial, curva ABC, giro por zona.
 
