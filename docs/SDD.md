@@ -447,5 +447,5 @@ Vendedor: "tem café pilão 500g? onde fica?"
 | Catálogo > 5.000 SKUs no Mobile | Memória/tempo de carga | Cache local + paginação por cursor + índice por prefixo |
 | Rejeição fiscal por NCM incorreto | Venda sem documento | Validação de NCM no cadastro + fila de reprocessamento |
 | Divergência entre estoque e físico | Ruptura invisível | ✅ Inventário cíclico por zona (`/inventario`) |
-| NCM/CEST incorretos no cadastro | Rejeição fiscal | `lookupProductData` (Cosmos Bluesoft + NCM/TIPI) no cadastro e no agente |
+| NCM/CEST incorretos no cadastro | Rejeição fiscal | ✅ `lookupProductData` no cadastro + painel de pendências fiscais em `/fiscal` (`fiscalPendencies`, correção automática por fontes oficiais); NCM normalizado (aceita pontuação) no motor fiscal |
 | Mapa desatualizado após remanejo | IA responde local errado | Registro de `updated_date` por zona + alerta de zona sem revisão |

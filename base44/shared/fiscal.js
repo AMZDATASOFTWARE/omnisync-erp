@@ -32,7 +32,7 @@ export function buildFiscalPayload(sale, products, config = {}, taxRules = []) {
   const items = (sale.items || []).map((item, idx) => {
     const product = products.find((p) => p.id === item.product_id) || {};
     const total = (item.price || 0) * (item.quantity || 0);
-    const ncm = product.ncm || "00000000";
+    const ncm = String(product.ncm || "").replace(/\D/g, "") || "00000000";
     const rule = resolveTaxRule(ncm, uf, taxRules);
     const aliquota = rule ? (Number(rule.aliquota_icms) || 0) / 100 : rules.aliquota_efetiva;
     const tributos = regime === "simples_nacional"

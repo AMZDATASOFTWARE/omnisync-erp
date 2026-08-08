@@ -4,6 +4,7 @@ import { useToast } from "@/components/ui/use-toast";
 import SaleFiscalRow from "@/components/fiscal/SaleFiscalRow";
 import FiscalConfigCard from "@/components/fiscal/FiscalConfigCard";
 import CancelDialog from "@/components/fiscal/CancelDialog";
+import FiscalPendencies from "@/components/fiscal/FiscalPendencies";
 import { Button } from "@/components/ui/button";
 import { Receipt, RefreshCw } from "lucide-react";
 
@@ -88,6 +89,8 @@ export default function Fiscal() {
           {reprocessing ? "Reprocessando..." : "Reprocessar fila"}
         </Button>
       </div>
+
+      <FiscalPendencies />
 
       {config && <FiscalConfigCard config={config} onSave={saveConfig} />}
 
