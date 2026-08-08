@@ -1,6 +1,7 @@
 import React, { useCallback, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ZoomIn, ZoomOut, Maximize, Hand, Brush, Rows3 } from "lucide-react";
+import { ZoomIn, ZoomOut, Maximize, Hand, Brush, Rows3, PenTool, Check, Trash2 } from "lucide-react";
+import PolygonLayer from "@/components/map/PolygonLayer";
 
 const CELL = 28;
 
@@ -14,6 +15,8 @@ export default function MapCanvas({ map, selectedZoneId, onChange, highlightZone
   const [painting, setPainting] = useState(false);
   const [erasing, setErasing] = useState(false);
   const panRef = useRef(null);
+  const svgRef = useRef(null);
+  const [draft, setDraft] = useState([]);
 
   const zoneAt = (x, y) => zones.find((z) => z.cells?.some((c) => c.x === x && c.y === y));
 
@@ -39,6 +42,26 @@ export default function MapCanvas({ map, selectedZoneId, onChange, highlightZone
     setErasing(erase);
     setPainting(true);
     paintCell(x, y, erase);
+  };
+
+  const addPolyPoint = (e) => {
+    if (readOnly || tool !== "poly" || !selectedZoneId) return;
+    const r = svgRef.current.getBoundingClientRect();
+    const px = (((e.clientX - r.left) / r.width) * W - view.x) / view.scale;
+    const py = (((e.clientY - r.top) / r.height) * H - view.y) / view.scale;
+    setDraft((d) => [...d, { x: +(px / W).toFixed(4), y: +(py / H).toFixed(4) }]);
+  };
+
+  const savePolygon = () => {
+    if (draft.length < 3 || !selectedZoneId) return;
+    onChange({ ...map, zones: zones.map((z) => (z.id === selectedZoneId ? { ...z, polygon: draft } : z)) });
+    setDraft([]);
+  };
+
+  const clearPolygon = () => {
+    setDraft([]);
+    if (!selectedZoneId) return;
+    onChange({ ...map, zones: zones.map((z) => (z.id === selectedZoneId ? { ...z, polygon: [] } : z)) });
   };
 
   const zoom = (f) => setView((v) => ({ ...v, scale: Math.min(3, Math.max(0.4, v.scale * f)) }));
@@ -80,7 +103,20 @@ export default function MapCanvas({ map, selectedZoneId, onChange, highlightZone
             className={`px-3 h-8 text-xs flex items-center gap-1.5 border-l border-slate-200 ${tool === "shelf" ? "bg-indigo-600 text-white" : "text-slate-600 hover:bg-slate-50"}`}>
             <Rows3 className="w-3.5 h-3.5" /> Gôndola
           </button>
+          <button onClick={() => { setTool("poly"); setDraft([]); }}
+            className={`px-3 h-8 text-xs flex items-center gap-1.5 border-l border-slate-200 ${tool === "poly" ? "bg-cyan-500 text-slate-900" : "text-slate-600 hover:bg-slate-50"}`}>
+            <PenTool className="w-3.5 h-3.5" /> Polígono
+          </button>
         </div>
+        {tool === "poly" && (
+          <div className="flex items-center gap-1.5">
+            <Button variant="outline" size="icon" className="h-8 w-8" title="Concluir polígono"
+              onClick={savePolygon} disabled={draft.length < 3}><Check className="w-3.5 h-3.5" /></Button>
+            <Button variant="outline" size="icon" className="h-8 w-8" title="Limpar polígono da zona"
+              onClick={clearPolygon}><Trash2 className="w-3.5 h-3.5" /></Button>
+            <span className="text-xs text-slate-400">{draft.length} ponto(s)</span>
+          </div>
+        )}
         <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => zoom(1.2)}><ZoomIn className="w-3.5 h-3.5" /></Button>
         <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => zoom(0.8)}><ZoomOut className="w-3.5 h-3.5" /></Button>
         <Button variant="outline" size="icon" className="h-8 w-8" onClick={reset}><Maximize className="w-3.5 h-3.5" /></Button>
@@ -90,7 +126,7 @@ export default function MapCanvas({ map, selectedZoneId, onChange, highlightZone
       <div className="rounded-lg bg-slate-50 border border-slate-100 overflow-hidden select-none"
         onWheel={onWheel} onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={stop} onMouseLeave={stop}
         style={{ cursor: tool === "pan" ? "grab" : "crosshair" }}>
-        <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ aspectRatio: `${W} / ${H}` }}>
+        <svg ref={svgRef} onClick={addPolyPoint} viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ aspectRatio: `${W} / ${H}` }}>
           <g transform={`translate(${view.x} ${view.y}) scale(${view.scale})`}>
             {[...Array(rows)].map((_, y) =>
               [...Array(cols)].map((_, x) => {
@@ -107,6 +143,9 @@ export default function MapCanvas({ map, selectedZoneId, onChange, highlightZone
                 );
               })
             )}
+
+            <PolygonLayer zones={zones} W={W} H={H} highlightZoneId={highlightZoneId}
+              draftPoints={draft} draftColor={zones.find((z) => z.id === selectedZoneId)?.color} />
 
             {zones.map((z) => {
               const c = (z.cells || [])[0];
