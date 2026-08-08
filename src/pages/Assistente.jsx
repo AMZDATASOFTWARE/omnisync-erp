@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Send, Sparkles } from "lucide-react";
 import MessageBubble from "@/components/assistente/MessageBubble";
+import WhatsAppConnect from "@/components/assistente/WhatsAppConnect";
 
 const SUGGESTIONS = [
   "Onde está a lâmpada LED?",
@@ -51,11 +52,14 @@ export default function Assistente() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-0px)] max-h-screen">
-      <header className="px-5 md:px-8 py-5 border-b bg-white">
-        <h1 className="text-xl font-semibold tracking-tight flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-emerald-500" /> Assistente da Loja
-        </h1>
-        <p className="text-sm text-muted-foreground">Preço, estoque e localização física — direto do sistema.</p>
+      <header className="px-5 md:px-8 py-5 border-b bg-white flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-emerald-500" /> Assistente da Loja
+          </h1>
+          <p className="text-sm text-muted-foreground">Preço, estoque e localização física — direto do sistema.</p>
+        </div>
+        <WhatsAppConnect />
       </header>
 
       <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 space-y-4">
