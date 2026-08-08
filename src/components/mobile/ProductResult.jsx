@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { ArrowLeft, MapPin, Package } from "lucide-react";
 import { brl } from "@/lib/format";
 import MapCanvas from "@/components/map/MapCanvas";
+import RouteHint from "@/components/mobile/RouteHint";
 
 export default function ProductResult({ product, map, onBack }) {
+  const [route, setRoute] = useState(null);
   const zoneId = product.zone_id || product.map_zone_id;
   const zone = map?.zones?.find((z) => z.id === zoneId);
   const shelf = product.shelf_identifier || product.shelf_label;
@@ -42,13 +44,15 @@ export default function ProductResult({ product, map, onBack }) {
           </div>
         </div>
 
+        {zone && <RouteHint product={product} onRoute={setRoute} />}
+
         {zone && map && (
           <div className="bg-white rounded-2xl p-4">
             <p className="text-xs text-slate-500 mb-3 flex items-center gap-1.5">
               <MapPin className="w-3.5 h-3.5 text-emerald-500" />
               Área destacada na planta — <span className="font-medium text-slate-700">{zone.label}</span>
             </p>
-            <MapCanvas map={map} readOnly minimal highlightZoneId={zone.id}
+            <MapCanvas map={map} readOnly minimal highlightZoneId={zone.id} route={route}
               pin={cell ? { x: cell.x, y: cell.y } : null} />
           </div>
         )}

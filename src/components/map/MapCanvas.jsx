@@ -4,7 +4,7 @@ import { ZoomIn, ZoomOut, Maximize, Hand, Brush, Rows3 } from "lucide-react";
 
 const CELL = 28;
 
-export default function MapCanvas({ map, selectedZoneId, onChange, highlightZoneId, pin, onZoneClick, readOnly = false, minimal = false, selectedShelfId, onMoveShelf, highlightShelfId }) {
+export default function MapCanvas({ map, selectedZoneId, onChange, highlightZoneId, pin, onZoneClick, readOnly = false, minimal = false, selectedShelfId, onMoveShelf, highlightShelfId, route = null }) {
   const cols = map.cols || 20;
   const rows = map.rows || 12;
   const zones = map.zones || [];
@@ -135,6 +135,19 @@ export default function MapCanvas({ map, selectedZoneId, onChange, highlightZone
                 </g>
               );
             })}
+
+            {route?.length > 1 && (
+              <g pointerEvents="none">
+                <polyline
+                  points={route.map((c) => `${c.x * CELL + CELL / 2},${c.y * CELL + CELL / 2}`).join(" ")}
+                  fill="none" stroke="#0ea5e9" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"
+                  strokeDasharray="8 6" opacity="0.9">
+                  <animate attributeName="stroke-dashoffset" values="28;0" dur="1s" repeatCount="indefinite" />
+                </polyline>
+                <circle cx={route[0].x * CELL + CELL / 2} cy={route[0].y * CELL + CELL / 2} r="5"
+                  fill="#ffffff" stroke="#0ea5e9" strokeWidth="3" />
+              </g>
+            )}
 
             {pin && (
               <g transform={`translate(${pin.x * CELL + CELL / 2} ${pin.y * CELL + CELL / 2})`} pointerEvents="none">
