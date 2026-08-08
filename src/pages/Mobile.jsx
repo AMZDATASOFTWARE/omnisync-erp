@@ -6,35 +6,36 @@ import { brl } from "@/lib/format";
 import { useDebounce } from "@/hooks/use-debounce";
 import ProductResult from "@/components/mobile/ProductResult";
 import BarcodeScanner from "@/components/mobile/BarcodeScanner";
+import OfflineBadge from "@/components/mobile/OfflineBadge";
+import { useOfflineCache } from "@/hooks/use-offline-cache";
 
 export default function Mobile() {
-  const [products, setProducts] = useState([]);
-  const [map, setMap] = useState(null);
   const [q, setQ] = useState("");
   const [selected, setSelected] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [scanning, setScanning] = useState(false);
   const inputRef = useRef(null);
   const query = useDebounce(q, 200).toLowerCase().trim();
 
-  useEffect(() => {
-    Promise.all([
+  const { data, loading, fromCache, updatedAt } = useOfflineCache("omnisync.mobile.catalog", async () => {
+    const [p, m] = await Promise.all([
       base44.entities.Product.list("name", 500),
       base44.entities.StoreMap.list("", 1),
-    ]).then(([p, m]) => {
-      const list = p.filter((x) => x.active !== false);
-      setProducts(list);
-      setMap(m[0] || null);
-      setLoading(false);
+    ]);
+    return { products: p.filter((x) => x.active !== false), map: m[0] || null };
+  });
 
-      const sku = new URLSearchParams(window.location.search).get("sku");
-      if (sku) {
-        const found = list.find((x) => x.sku === sku || x.barcode === sku || x.id === sku);
-        if (found) setSelected(found);
-        else setQ(sku);
-      }
-    });
-  }, []);
+  const products = data?.products || [];
+  const map = data?.map || null;
+
+  useEffect(() => {
+    if (!products.length) return;
+    const sku = new URLSearchParams(window.location.search).get("sku");
+    if (!sku) return;
+    const found = products.find((x) => x.sku === sku || x.barcode === sku || x.id === sku);
+    if (found) setSelected(found);
+    else setQ(sku);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [products.length]);
 
   const results = query
     ? products.filter((p) => [p.name, p.sku, p.barcode, p.brand, p.category].some((f) => (f || "").toLowerCase().includes(query))).slice(0, 20)
@@ -81,6 +82,8 @@ export default function Mobile() {
             <ScanLine className="w-6 h-6" />
           </button>
         </div>
+
+        <OfflineBadge fromCache={fromCache} updatedAt={updatedAt} />
 
         {loading && <p className="text-slate-500 text-sm text-center py-6">Carregando produtos…</p>}
 
