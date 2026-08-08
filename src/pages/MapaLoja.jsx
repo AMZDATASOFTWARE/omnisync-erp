@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import MapCanvas from "@/components/map/MapCanvas";
 import ZonePanel from "@/components/map/ZonePanel";
+import ZoneInventory from "@/components/map/ZoneInventory";
 
 export default function MapaLoja() {
   const [map, setMap] = useState(null);
@@ -34,6 +35,8 @@ export default function MapaLoja() {
 
   if (loading) return <div className="p-8 text-slate-400 text-sm">Carregando mapa da loja…</div>;
 
+  const selectedZone = (map.zones || []).find((z) => z.id === selectedZoneId);
+
   return (
     <div className="p-6 md:p-8 space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -47,8 +50,11 @@ export default function MapaLoja() {
       </div>
 
       <div className="grid lg:grid-cols-4 gap-5">
-        <div className="lg:col-span-3 bg-white rounded-xl border border-slate-200/80 p-4 overflow-x-auto">
-          <MapCanvas map={map} selectedZoneId={selectedZoneId} onChange={persist} />
+        <div className="lg:col-span-3 space-y-5">
+          <div className="bg-white rounded-xl border border-slate-200/80 p-4 overflow-x-auto">
+            <MapCanvas map={map} selectedZoneId={selectedZoneId} onChange={persist} />
+          </div>
+          {selectedZone && <ZoneInventory zone={selectedZone} products={products} />}
         </div>
         <ZonePanel map={map} products={products} selectedZoneId={selectedZoneId}
           onSelect={setSelectedZoneId} onChange={persist} />
