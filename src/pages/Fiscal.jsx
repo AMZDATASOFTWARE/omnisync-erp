@@ -11,6 +11,8 @@ import VoidNumbersDialog from "@/components/fiscal/VoidNumbersDialog";
 import FiscalExportCard from "@/components/fiscal/FiscalExportCard";
 import DanfeDialog from "@/components/fiscal/DanfeDialog";
 import NfeDialog from "@/components/fiscal/NfeDialog";
+import ReturnDialog from "@/components/fiscal/ReturnDialog";
+import ReturnsCard from "@/components/fiscal/ReturnsCard";
 import { Button } from "@/components/ui/button";
 import { Receipt, RefreshCw } from "lucide-react";
 
@@ -25,16 +27,20 @@ export default function Fiscal() {
   const [voidOpen, setVoidOpen] = useState(false);
   const [printTarget, setPrintTarget] = useState(null);
   const [nfeTarget, setNfeTarget] = useState(null);
+  const [returnTarget, setReturnTarget] = useState(null);
+  const [returns, setReturns] = useState([]);
   const [events, setEvents] = useState([]);
   const { toast } = useToast();
 
   const load = async () => {
-    const [data, configs, evts] = await Promise.all([
+    const [data, configs, evts, rets] = await Promise.all([
       base44.entities.Sale.filter({ status: "concluida" }, "-created_date", 100),
       base44.entities.FiscalConfig.list("-created_date", 1),
       base44.entities.FiscalEvent.list("-created_date", 50),
+      base44.entities.SaleReturn.list("-created_date", 50),
     ]);
     setSales(data);
+    setReturns(rets);
     setEvents(evts);
     setConfig(configs[0] || {});
     setLoading(false);
@@ -115,6 +121,17 @@ export default function Fiscal() {
     await load();
   };
 
+  const handleReturn = async (form) => {
+    const res = await base44.functions.invoke("registerSaleReturn", { sale_id: returnTarget.id, ...form });
+    const data = res.data || {};
+    toast({
+      title: data.success ? "Devolução registrada" : "Não foi possível registrar a devolução",
+      description: data.message,
+      variant: data.success ? undefined : "destructive",
+    });
+    await load();
+  };
+
   const handleReprocess = async () => {
     setReprocessing(true);
     const res = await base44.functions.invoke("reprocessFiscalQueue", {});
@@ -166,7 +183,8 @@ export default function Fiscal() {
             ) : (
               sales.map((s) => (
                 <SaleFiscalRow key={s.id} sale={s} emitting={emittingId === s.id} onEmit={handleEmit}
-                  onCancel={setCancelTarget} onCorrect={setCorrectTarget} onPrint={setPrintTarget} onEmitNfe={setNfeTarget} />
+                  onCancel={setCancelTarget} onCorrect={setCorrectTarget} onPrint={setPrintTarget}
+                  onEmitNfe={setNfeTarget} onReturn={setReturnTarget} />
               ))
             )}
           </tbody>
@@ -174,6 +192,8 @@ export default function Fiscal() {
       </div>
 
       <FiscalEventsCard events={events} onVoid={() => setVoidOpen(true)} />
+
+      <ReturnsCard returns={returns} />
 
       <FiscalExportCard />
 
@@ -184,6 +204,8 @@ export default function Fiscal() {
       <VoidNumbersDialog open={voidOpen} onOpenChange={setVoidOpen} onConfirm={handleVoid} />
       <NfeDialog sale={nfeTarget} open={!!nfeTarget}
         onOpenChange={(v) => !v && setNfeTarget(null)} onConfirm={handleEmitNfe} />
+      <ReturnDialog sale={returnTarget} open={!!returnTarget}
+        onOpenChange={(v) => !v && setReturnTarget(null)} onConfirm={handleReturn} />
       <DanfeDialog sale={printTarget} config={config} open={!!printTarget}
         onOpenChange={(v) => !v && setPrintTarget(null)} />
     </div>

@@ -1,0 +1,118 @@
+{
+  "name": "SaleReturn",
+  "type": "object",
+  "description": "Devolu\u00e7\u00e3o (total ou parcial) de uma venda, com retorno de estoque e nota fiscal de devolu\u00e7\u00e3o.",
+  "properties": {
+    "store_id": {
+      "type": "string",
+      "description": "Unidade (Store) da devolu\u00e7\u00e3o"
+    },
+    "sale_id": {
+      "type": "string",
+      "description": "Venda de origem"
+    },
+    "sale_fiscal_key": {
+      "type": "string",
+      "description": "Chave da nota de venda referenciada"
+    },
+    "sale_fiscal_number": {
+      "type": "string"
+    },
+    "customer_name": {
+      "type": "string"
+    },
+    "customer_cpf_cnpj": {
+      "type": "string"
+    },
+    "motivo": {
+      "type": "string",
+      "description": "Motivo da devolu\u00e7\u00e3o (m\u00edn. 5 caracteres)"
+    },
+    "tipo": {
+      "type": "string",
+      "enum": [
+        "total",
+        "parcial"
+      ],
+      "default": "parcial"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "price": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "total": {
+      "type": "number",
+      "default": 0
+    },
+    "restock": {
+      "type": "boolean",
+      "default": true,
+      "description": "Retornar itens ao estoque"
+    },
+    "refund_method": {
+      "type": "string",
+      "enum": [
+        "dinheiro",
+        "credito",
+        "debito",
+        "pix",
+        "credito_loja"
+      ],
+      "default": "dinheiro"
+    },
+    "financial_entry_id": {
+      "type": "string",
+      "description": "Lan\u00e7amento de estorno gerado"
+    },
+    "fiscal_status": {
+      "type": "string",
+      "enum": [
+        "nao_aplicavel",
+        "pendente",
+        "emitida",
+        "erro"
+      ],
+      "default": "pendente"
+    },
+    "fiscal_modelo": {
+      "type": "string",
+      "enum": [
+        "65",
+        "55"
+      ],
+      "default": "55"
+    },
+    "fiscal_number": {
+      "type": "string"
+    },
+    "fiscal_key": {
+      "type": "string"
+    },
+    "fiscal_error": {
+      "type": "string"
+    },
+    "operador": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "sale_id",
+    "total"
+  ]
+}
