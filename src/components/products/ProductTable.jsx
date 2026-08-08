@@ -21,13 +21,15 @@ export default function ProductTable({ products, map, onEdit, onDelete }) {
             <th className="px-4 py-3 font-medium text-right">Preço</th>
             <th className="px-4 py-3 font-medium text-right">Estoque</th>
             <th className="px-4 py-3 font-medium">Localização</th>
-            <th className="px-4 py-3 font-medium">NCM</th>
+            <th className="px-4 py-3 font-medium">NCM / CFOP</th>
             <th className="px-4 py-3"></th>
           </tr>
         </thead>
         <tbody>
           {products.map((p) => {
-            const low = (p.stock_quantity || 0) <= (p.min_stock || 0);
+            const low = (p.stock_quantity || 0) <= (p.stock_min ?? p.min_stock ?? 0);
+            const zid = p.zone_id || p.map_zone_id;
+            const shelf = p.shelf_identifier || p.shelf_label;
             return (
               <tr key={p.id} className="border-b border-slate-50 hover:bg-slate-50/60">
                 <td className="px-4 py-3">
@@ -43,14 +45,14 @@ export default function ProductTable({ products, map, onEdit, onDelete }) {
                   </Badge>
                 </td>
                 <td className="px-4 py-3 text-slate-600">
-                  {p.map_zone_id ? (
+                  {zid ? (
                     <span className="inline-flex items-center gap-1 text-xs">
                       <MapPin className="w-3 h-3 text-emerald-500" />
-                      {zoneLabel(p.map_zone_id) || "Zona"}{p.shelf_label ? ` · ${p.shelf_label}` : ""}
+                      {zoneLabel(zid) || "Zona"}{shelf ? ` · ${shelf}` : ""}{p.pos_z != null && p.pos_z !== "" ? ` · N${p.pos_z}` : ""}
                     </span>
                   ) : <span className="text-slate-300 text-xs">Sem local</span>}
                 </td>
-                <td className="px-4 py-3 text-xs text-slate-400 font-mono">{p.ncm || "—"}</td>
+                <td className="px-4 py-3 text-xs text-slate-400 font-mono">{p.ncm || "—"}<br />{p.cfop_default || ""}</td>
                 <td className="px-4 py-3 text-right whitespace-nowrap">
                   <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onEdit(p)}><Pencil className="w-3.5 h-3.5" /></Button>
                   <Button variant="ghost" size="icon" className="h-8 w-8 text-rose-500" onClick={() => onDelete(p)}><Trash2 className="w-3.5 h-3.5" /></Button>

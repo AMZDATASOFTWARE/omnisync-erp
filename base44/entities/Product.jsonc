@@ -35,7 +35,8 @@
         "cx",
         "pct"
       ],
-      "default": "un"
+      "default": "un",
+      "description": "Unidade de medida"
     },
     "price": {
       "type": "number",
@@ -52,15 +53,40 @@
     "min_stock": {
       "type": "number",
       "default": 0,
-      "description": "Estoque m\u00ednimo para alerta"
+      "description": "Estoque m\u00ednimo (legado, espelha stock_min)"
+    },
+    "stock_min": {
+      "type": "number",
+      "default": 0,
+      "description": "Estoque m\u00ednimo para alerta de ruptura"
+    },
+    "stock_max": {
+      "type": "number",
+      "description": "Estoque m\u00e1ximo / limite de reposi\u00e7\u00e3o"
+    },
+    "track_batch": {
+      "type": "boolean",
+      "default": false,
+      "description": "Ativa rastreio por lote e validade"
     },
     "ncm": {
       "type": "string",
-      "description": "C\u00f3digo NCM"
+      "description": "Nomenclatura Comum do Mercosul"
     },
     "cest": {
       "type": "string",
-      "description": "C\u00f3digo CEST"
+      "description": "C\u00f3digo Especificador da Substitui\u00e7\u00e3o Tribut\u00e1ria"
+    },
+    "cfop_default": {
+      "type": "string",
+      "description": "CFOP padr\u00e3o de sa\u00edda (ex: 5102)"
+    },
+    "tax_origin": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 8,
+      "default": 0,
+      "description": "Origem da mercadoria (0=nacional ... 8=importa\u00e7\u00e3o)"
     },
     "lot": {
       "type": "string",
@@ -73,11 +99,31 @@
     },
     "map_zone_id": {
       "type": "string",
+      "description": "ID da zona no mapa (legado, espelha zone_id)"
+    },
+    "zone_id": {
+      "type": "string",
       "description": "ID da zona no mapa da loja"
     },
     "shelf_label": {
       "type": "string",
-      "description": "Prateleira/posi\u00e7\u00e3o dentro da zona"
+      "description": "Prateleira/posi\u00e7\u00e3o (legado)"
+    },
+    "shelf_identifier": {
+      "type": "string",
+      "description": "Identificador da g\u00f4ndola/estante"
+    },
+    "pos_x": {
+      "type": "number",
+      "description": "Coordenada X normalizada (0..1)"
+    },
+    "pos_y": {
+      "type": "number",
+      "description": "Coordenada Y normalizada (0..1)"
+    },
+    "pos_z": {
+      "type": "number",
+      "description": "N\u00edvel da prateleira (0 = piso)"
     },
     "active": {
       "type": "boolean",

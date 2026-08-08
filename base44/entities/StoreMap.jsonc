@@ -14,6 +14,21 @@
       "type": "integer",
       "default": 12
     },
+    "canvas_width": {
+      "type": "number",
+      "default": 1000,
+      "description": "Largura do plano cartogr\u00e1fico"
+    },
+    "canvas_height": {
+      "type": "number",
+      "default": 600,
+      "description": "Altura do plano cartogr\u00e1fico"
+    },
+    "grid_step": {
+      "type": "number",
+      "default": 50,
+      "description": "Passo da grade de snap"
+    },
     "zones": {
       "type": "array",
       "items": {
@@ -34,6 +49,7 @@
               "caixa",
               "deposito",
               "entrada",
+              "corredor",
               "outro"
             ]
           },
@@ -53,6 +69,64 @@
                 }
               }
             }
+          },
+          "polygon": {
+            "type": "array",
+            "description": "Pol\u00edgono vetorial (coordenadas normalizadas 0..1)",
+            "items": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "shelves": {
+      "type": "array",
+      "description": "G\u00f4ndolas/estantes com coordenadas e n\u00edveis",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "zone_id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "levels": {
+            "type": "integer",
+            "default": 1,
+            "description": "Quantidade de n\u00edveis de prateleira"
+          },
+          "orientation": {
+            "type": "string",
+            "enum": [
+              "horizontal",
+              "vertical"
+            ],
+            "default": "horizontal"
           }
         }
       }
