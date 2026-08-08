@@ -27,6 +27,7 @@ export default function ZonePanel({ map, products, selectedZoneId, onSelect, onC
       label: label.trim(),
       type,
       color: COLORS[zones.length % COLORS.length],
+      reviewed_at: new Date().toISOString(),
       cells: [],
     };
     onChange({ ...map, zones: [...zones, zone] });

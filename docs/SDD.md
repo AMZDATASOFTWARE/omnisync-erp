@@ -456,4 +456,4 @@ Vendedor: "tem café pilão 500g? onde fica?"
 | Rejeição fiscal por NCM incorreto | Venda sem documento | Validação de NCM no cadastro + fila de reprocessamento |
 | Divergência entre estoque e físico | Ruptura invisível | ✅ Inventário cíclico por zona (`/inventario`) |
 | NCM/CEST incorretos no cadastro | Rejeição fiscal | ✅ `lookupProductData` no cadastro + painel de pendências fiscais em `/fiscal` (`fiscalPendencies`, correção automática por fontes oficiais); NCM normalizado (aceita pontuação) no motor fiscal |
-| Mapa desatualizado após remanejo | IA responde local errado | Registro de `updated_date` por zona + alerta de zona sem revisão |
+| Mapa desatualizado após remanejo | IA responde local errado | ✅ `reviewed_at` por zona + painel "Revisão das zonas" em `/mapa` (alerta acima de 90 dias, botão "Revisar"); o agente avisa quando a zona está sem revisão e grava a data ao conferir |

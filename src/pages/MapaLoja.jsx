@@ -6,6 +6,7 @@ import ZoneInventory from "@/components/map/ZoneInventory";
 import ProductLinker from "@/components/map/ProductLinker";
 import ShelfPanel from "@/components/map/ShelfPanel";
 import HeatControls from "@/components/map/HeatControls";
+import ZoneReviewPanel from "@/components/map/ZoneReviewPanel";
 import { computeHeat } from "@/lib/heat";
 import { withStore, ofStore } from "@/lib/scope";
 
@@ -59,6 +60,13 @@ export default function MapaLoja() {
       name: updated.name, cols: updated.cols, rows: updated.rows, zones: updated.zones, shelves: updated.shelves || [],
     });
     setSaving(false);
+  };
+
+  const reviewZone = (zoneId) => {
+    persist({
+      ...map,
+      zones: (map.zones || []).map((z) => (z.id === zoneId ? { ...z, reviewed_at: new Date().toISOString() } : z)),
+    });
   };
 
   const moveShelf = (shelfId, x, y) => {
@@ -168,6 +176,7 @@ export default function MapaLoja() {
           <HeatControls mode={heatMode} onChange={setHeatMode} heat={heat} zones={zones} />
           <ZonePanel map={map} products={products} selectedZoneId={selectedZoneId}
             onSelect={setSelectedZoneId} onChange={persist} />
+          <ZoneReviewPanel zones={zones} onReview={reviewZone} onSelect={setSelectedZoneId} />
           <ShelfPanel map={map} zone={selectedZone} onChange={persist}
             selectedShelfId={selectedShelfId} onSelectShelf={setSelectedShelfId} />
           <ProductLinker products={products} zone={selectedZone}
