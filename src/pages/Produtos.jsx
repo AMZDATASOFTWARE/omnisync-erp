@@ -4,6 +4,7 @@ import { Plus, Search } from "lucide-react";
 import ProductTable from "@/components/products/ProductTable";
 import ProductForm from "@/components/products/ProductForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { withStore, ofStore } from "@/lib/scope";
 
 export default function Produtos() {
   const [products, setProducts] = useState([]);
@@ -16,17 +17,17 @@ export default function Produtos() {
   const load = async () => {
     const [p, maps] = await Promise.all([
       base44.entities.Product.list("-updated_date", 500),
-      base44.entities.StoreMap.list("", 1),
+      base44.entities.StoreMap.list("", 20),
     ]);
-    setProducts(p);
-    setMap(maps[0] || null);
+    setProducts(ofStore(p));
+    setMap(ofStore(maps)[0] || null);
     setLoading(false);
   };
   useEffect(() => { load(); }, []);
 
   const save = async (data) => {
     if (editing?.id) await base44.entities.Product.update(editing.id, data);
-    else await base44.entities.Product.create(data);
+    else await base44.entities.Product.create(withStore(data));
     setOpen(false); setEditing(null);
     load();
   };

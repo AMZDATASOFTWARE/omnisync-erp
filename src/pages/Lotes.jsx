@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import BatchForm from "@/components/lotes/BatchForm";
 import BatchTable from "@/components/lotes/BatchTable";
 import ExpiryAlerts from "@/components/lotes/ExpiryAlerts";
+import { withStore, ofStore } from "@/lib/scope";
 
 export default function Lotes() {
   const [batches, setBatches] = useState([]);
@@ -14,14 +15,14 @@ export default function Lotes() {
       base44.entities.StockBatch.list("expiry_date", 500),
       base44.entities.Product.list("name", 500),
     ]).then(([bs, ps]) => {
-      setBatches(bs);
-      setProducts(ps);
+      setBatches(ofStore(bs));
+      setProducts(ofStore(ps));
       setLoading(false);
     });
   }, []);
 
   const create = async (data) => {
-    const created = await base44.entities.StockBatch.create(data);
+    const created = await base44.entities.StockBatch.create(withStore(data));
     setBatches((b) => [...b, created]);
     const product = products.find((p) => p.id === data.product_id);
     if (product) {

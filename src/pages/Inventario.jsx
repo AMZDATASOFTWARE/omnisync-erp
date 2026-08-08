@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { MapPin } from "lucide-react";
 import CountSheet from "@/components/inventario/CountSheet";
 import CountHistory from "@/components/inventario/CountHistory";
+import { withStore, ofStore } from "@/lib/scope";
 
 export default function Inventario() {
   const [map, setMap] = useState(null);
@@ -18,13 +19,13 @@ export default function Inventario() {
 
   useEffect(() => {
     Promise.all([
-      base44.entities.StoreMap.list("", 1),
+      base44.entities.StoreMap.list("", 20),
       base44.entities.Product.list("name", 500),
-      base44.entities.InventoryCount.list("-created_date", 20),
+      base44.entities.InventoryCount.list("-created_date", 50),
     ]).then(([m, p, h]) => {
-      setMap(m[0] || null);
-      setProducts(p);
-      setHistory(h);
+      setMap(ofStore(m)[0] || null);
+      setProducts(ofStore(p));
+      setHistory(ofStore(h).slice(0, 20));
       setLoading(false);
     });
   }, []);
@@ -47,7 +48,7 @@ export default function Inventario() {
       });
 
     const divergent = rows.filter((r) => r.diff !== 0);
-    const record = await base44.entities.InventoryCount.create({
+    const record = await base44.entities.InventoryCount.create(withStore({
       zone_id: zoneId, zone_label: zone?.label || "", status: "finalizada",
       started_at: new Date().toISOString(), finished_at: new Date().toISOString(),
       items: rows, items_count: rows.length, divergences: divergent.length,
@@ -55,7 +56,7 @@ export default function Inventario() {
         const prod = products.find((p) => p.id === r.product_id);
         return s + r.diff * (prod?.cost_price || 0);
       }, 0),
-    });
+    }));
 
     if (divergent.length) {
       await base44.entities.Product.bulkUpdate(

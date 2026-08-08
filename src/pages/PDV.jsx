@@ -5,6 +5,7 @@ import Cart from "@/components/pdv/Cart";
 import CashControls from "@/components/pdv/CashControls";
 import OpenSessionCard from "@/components/pdv/OpenSessionCard";
 import { useToast } from "@/components/ui/use-toast";
+import { withStore, ofStore } from "@/lib/scope";
 
 export default function PDV() {
   const [session, setSession] = useState(null);
@@ -15,11 +16,11 @@ export default function PDV() {
 
   const load = async () => {
     const [sessions, prods] = await Promise.all([
-      base44.entities.CashSession.filter({ status: "aberto" }, "-created_date", 1),
+      base44.entities.CashSession.filter({ status: "aberto" }, "-created_date", 20),
       base44.entities.Product.list("-updated_date", 500),
     ]);
-    setSession(sessions[0] || null);
-    setProducts(prods.filter((p) => p.active !== false));
+    setSession(ofStore(sessions)[0] || null);
+    setProducts(ofStore(prods).filter((p) => p.active !== false));
     setLoading(false);
   };
   useEffect(() => { load(); }, []);
@@ -34,23 +35,23 @@ export default function PDV() {
 
   const finishSale = async ({ payment_method, customer }) => {
     const total = cart.reduce((a, i) => a + i.price * i.quantity, 0);
-    const sale = await base44.entities.Sale.create({
+    const sale = await base44.entities.Sale.create(withStore({
       items: cart, total, payment_method,
       customer_id: customer?.id || "", customer_name: customer?.name || "",
       cash_session_id: session.id, status: "concluida", fiscal_status: "pendente",
-    });
+    }));
     // Estoque + financeiro + CRM conectados
     await Promise.all([
       ...cart.map((i) => {
         const p = products.find((x) => x.id === i.product_id);
         return p ? base44.entities.Product.update(p.id, { stock_quantity: (p.stock_quantity || 0) - i.quantity }) : null;
       }).filter(Boolean),
-      base44.entities.FinancialEntry.create({
+      base44.entities.FinancialEntry.create(withStore({
         type: "receber", description: `Venda PDV #${sale.id.slice(-6)}`, amount: total,
         status: payment_method === "dinheiro" || payment_method === "pix" ? "pago" : "pendente",
         category: "Receita de Vendas", related_party: customer?.name || "Consumidor final", sale_id: sale.id,
         due_date: new Date().toISOString().split("T")[0],
-      }),
+      })),
       customer?.id
         ? base44.entities.Customer.update(customer.id, { total_spent: (customer.total_spent || 0) + total })
         : null,

@@ -3,6 +3,10 @@
   "type": "object",
   "description": "Lote de estoque com validade, para consumo FEFO (primeiro a vencer, primeiro a sair).",
   "properties": {
+    "store_id": {
+      "type": "string",
+      "description": "Unidade (Store) onde o lote est\u00e1"
+    },
     "product_id": {
       "type": "string"
     },

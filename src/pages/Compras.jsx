@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import SupplierForm from "@/components/compras/SupplierForm";
 import PurchaseForm from "@/components/compras/PurchaseForm";
 import { useToast } from "@/components/ui/use-toast";
+import { withStore, ofStore } from "@/lib/scope";
 
 export default function Compras() {
   const [suppliers, setSuppliers] = useState([]);
@@ -24,14 +25,14 @@ export default function Compras() {
       base44.entities.Purchase.list("-created_date", 100),
       base44.entities.Product.list("name", 500),
     ]);
-    setSuppliers(s); setPurchases(p); setProducts(pr); setLoading(false);
+    setSuppliers(s); setPurchases(ofStore(p)); setProducts(ofStore(pr)); setLoading(false);
   };
   useEffect(() => { load(); }, []);
 
   const saveSupplier = async (data) => { await base44.entities.Supplier.create(data); setSupOpen(false); load(); };
 
   const savePurchase = async (data) => {
-    const purchase = await base44.entities.Purchase.create(data);
+    const purchase = await base44.entities.Purchase.create(withStore(data));
     // entrada de estoque + atualização de custo
     await Promise.all(data.items.map((i) => {
       const p = products.find((x) => x.id === i.product_id);
@@ -41,7 +42,7 @@ export default function Compras() {
       });
     }));
     // conta a pagar no financeiro
-    await base44.entities.FinancialEntry.create({
+    await base44.entities.FinancialEntry.create(withStore({
       type: "pagar",
       description: `Compra ${data.invoice_number ? `NF ${data.invoice_number}` : purchase.id.slice(-6)} — ${data.supplier_name}`,
       amount: data.total,
@@ -49,7 +50,7 @@ export default function Compras() {
       status: "pendente",
       category: "Fornecedores",
       related_party: data.supplier_name,
-    });
+    }));
     setPurOpen(false);
     toast({ title: "Mercadoria recebida", description: "Estoque atualizado e conta a pagar gerada." });
     load();

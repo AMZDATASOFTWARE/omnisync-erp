@@ -31,7 +31,7 @@ export function useStores() {
   const selectStore = (id) => {
     localStorage.setItem(KEY, id);
     setStoreId(id);
-    window.dispatchEvent(new Event("omnisync:store-changed"));
+    window.location.reload(); // recarrega os dados no escopo da nova unidade
   };
 
   return { stores, storeId, store: stores.find((s) => s.id === storeId) || null, loading, selectStore, reload };

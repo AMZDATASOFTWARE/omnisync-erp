@@ -2,6 +2,10 @@
   "name": "Sale",
   "type": "object",
   "properties": {
+    "store_id": {
+      "type": "string",
+      "description": "Unidade (Store) onde a venda ocorreu"
+    },
     "items": {
       "type": "array",
       "items": {

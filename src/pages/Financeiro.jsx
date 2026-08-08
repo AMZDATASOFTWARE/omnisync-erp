@@ -8,6 +8,7 @@ import { brl } from "@/lib/format";
 import EntryForm from "@/components/financeiro/EntryForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { format } from "date-fns";
+import { withStore, ofStore } from "@/lib/scope";
 
 const statusStyle = {
   pendente: "border-amber-300 bg-amber-50 text-amber-700",
@@ -22,13 +23,13 @@ export default function Financeiro() {
   const [loading, setLoading] = useState(true);
 
   const load = async () => {
-    setEntries(await base44.entities.FinancialEntry.list("-created_date", 500));
+    setEntries(ofStore(await base44.entities.FinancialEntry.list("-created_date", 500)));
     setLoading(false);
   };
   useEffect(() => { load(); }, []);
 
   const save = async (data) => {
-    await base44.entities.FinancialEntry.create(data);
+    await base44.entities.FinancialEntry.create(withStore(data));
     setOpen(false);
     load();
   };

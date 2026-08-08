@@ -2,6 +2,10 @@
   "name": "FinancialEntry",
   "type": "object",
   "properties": {
+    "store_id": {
+      "type": "string",
+      "description": "Unidade (Store) do lan\u00e7amento"
+    },
     "type": {
       "type": "string",
       "enum": [

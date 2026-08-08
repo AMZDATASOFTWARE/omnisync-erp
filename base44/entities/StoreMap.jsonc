@@ -2,6 +2,10 @@
   "name": "StoreMap",
   "type": "object",
   "properties": {
+    "store_id": {
+      "type": "string",
+      "description": "Unidade (Store) a que esta planta pertence"
+    },
     "name": {
       "type": "string",
       "default": "Loja Principal"

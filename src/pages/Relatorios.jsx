@@ -5,6 +5,7 @@ import DREPanel from "@/components/relatorios/DREPanel";
 import ABCTable from "@/components/relatorios/ABCTable";
 import ZoneTurnover from "@/components/relatorios/ZoneTurnover";
 import { abcCurve, turnoverByZone, dre, inPeriod } from "@/lib/reports";
+import { ofStore } from "@/lib/scope";
 
 const PERIODS = [
   { days: 7, label: "7 dias" },
@@ -21,9 +22,14 @@ export default function Relatorios() {
       base44.entities.Sale.list("-created_date", 1000),
       base44.entities.Product.list("name", 1000),
       base44.entities.FinancialEntry.list("-created_date", 500),
-      base44.entities.StoreMap.list("", 1),
+      base44.entities.StoreMap.list("", 20),
     ]).then(([sales, products, entries, maps]) =>
-      setData({ sales, products, entries, zones: maps[0]?.zones || [] })
+      setData({
+        sales: ofStore(sales),
+        products: ofStore(products),
+        entries: ofStore(entries),
+        zones: ofStore(maps)[0]?.zones || [],
+      })
     );
   }, []);
 

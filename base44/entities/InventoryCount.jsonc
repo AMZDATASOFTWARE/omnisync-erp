@@ -3,6 +3,10 @@
   "type": "object",
   "description": "Contagem de invent\u00e1rio c\u00edclico por zona do mapa da loja.",
   "properties": {
+    "store_id": {
+      "type": "string",
+      "description": "Unidade (Store) da contagem"
+    },
     "zone_id": {
       "type": "string"
     },

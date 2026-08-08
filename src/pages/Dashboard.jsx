@@ -5,6 +5,7 @@ import { brl } from "@/lib/format";
 import StatCard from "@/components/dashboard/StatCard";
 import SalesChart from "@/components/dashboard/SalesChart";
 import { ShoppingCart, TrendingUp, PackageX, Clock, FileText, Sparkles, ArrowRight } from "lucide-react";
+import { ofStore } from "@/lib/scope";
 
 export default function Dashboard() {
   const [sales, setSales] = useState([]);
@@ -18,7 +19,7 @@ export default function Dashboard() {
       base44.entities.Product.list("-created_date", 500),
       base44.entities.FinancialEntry.filter({ status: "pendente" }, "due_date", 50),
     ]).then(([s, p, e]) => {
-      setSales(s); setProducts(p); setEntries(e); setLoading(false);
+      setSales(ofStore(s)); setProducts(ofStore(p)); setEntries(ofStore(e)); setLoading(false);
     });
   }, []);
 

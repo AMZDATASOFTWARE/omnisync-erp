@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Lock } from "lucide-react";
+import { withStore } from "@/lib/scope";
 
 export default function OpenSessionCard({ onOpened }) {
   const [amount, setAmount] = useState("");
@@ -11,10 +12,10 @@ export default function OpenSessionCard({ onOpened }) {
 
   const open = async () => {
     setSaving(true);
-    await base44.entities.CashSession.create({
+    await base44.entities.CashSession.create(withStore({
       status: "aberto", opening_amount: Number(amount) || 0,
       opened_at: new Date().toISOString(), operator,
-    });
+    }));
     onOpened();
   };
 

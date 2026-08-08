@@ -7,6 +7,7 @@ import ProductLinker from "@/components/map/ProductLinker";
 import ShelfPanel from "@/components/map/ShelfPanel";
 import HeatControls from "@/components/map/HeatControls";
 import { computeHeat } from "@/lib/heat";
+import { withStore, ofStore } from "@/lib/scope";
 
 export default function MapaLoja() {
   const [map, setMap] = useState(null);
@@ -22,17 +23,18 @@ export default function MapaLoja() {
 
   useEffect(() => {
     Promise.all([
-      base44.entities.StoreMap.list("", 1),
+      base44.entities.StoreMap.list("", 20),
       base44.entities.Product.list("name", 500),
       base44.entities.ProductPlacement.list("", 500),
       base44.entities.Sale.list("-created_date", 300),
     ]).then(async ([maps, prods, places, sls]) => {
-      setSales(sls);
+      setSales(ofStore(sls));
       setPlacements(places);
-      let m = maps[0];
-      if (!m) m = await base44.entities.StoreMap.create({ name: "Loja Principal", cols: 20, rows: 12, zones: [] });
+      let m = ofStore(maps)[0];
+      if (!m) m = await base44.entities.StoreMap.create(withStore({ name: "Loja Principal", cols: 20, rows: 12, zones: [] }));
       setMap(m);
-      setProducts(prods);
+      const scopedProds = ofStore(prods);
+      setProducts(scopedProds);
       setLoading(false);
 
       const params = new URLSearchParams(window.location.search);

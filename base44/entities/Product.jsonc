@@ -2,6 +2,10 @@
   "name": "Product",
   "type": "object",
   "properties": {
+    "store_id": {
+      "type": "string",
+      "description": "Unidade (Store) dona do cadastro; vazio = compartilhado entre todas"
+    },
     "name": {
       "type": "string",
       "description": "Nome do produto"
