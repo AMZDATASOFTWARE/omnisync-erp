@@ -3,7 +3,8 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Search, Pencil, Trash2 } from "lucide-react";
+import { Plus, Search, Pencil, Trash2, History } from "lucide-react";
+import CustomerHistory from "@/components/clientes/CustomerHistory";
 import { brl } from "@/lib/format";
 import ClienteForm from "@/components/clientes/ClienteForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -14,6 +15,7 @@ export default function Clientes() {
   const [editing, setEditing] = useState(null);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [historyOf, setHistoryOf] = useState(null);
 
   const load = async () => {
     setCustomers(await base44.entities.Customer.list("-updated_date", 500));
@@ -81,6 +83,7 @@ export default function Clientes() {
                   </td>
                   <td className="px-4 py-3 text-right font-medium text-slate-800">{brl(c.total_spent)}</td>
                   <td className="px-4 py-3 text-right whitespace-nowrap">
+                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setHistoryOf(c)}><History className="w-3.5 h-3.5" /></Button>
                     <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => { setEditing(c); setOpen(true); }}><Pencil className="w-3.5 h-3.5" /></Button>
                     <Button variant="ghost" size="icon" className="h-8 w-8 text-rose-500" onClick={() => remove(c)}><Trash2 className="w-3.5 h-3.5" /></Button>
                   </td>
@@ -93,6 +96,13 @@ export default function Clientes() {
           </table>
         </div>
       )}
+
+      <Dialog open={!!historyOf} onOpenChange={(v) => !v && setHistoryOf(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader><DialogTitle>Histórico — {historyOf?.name}</DialogTitle></DialogHeader>
+          {historyOf && <CustomerHistory customer={historyOf} />}
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-lg">
