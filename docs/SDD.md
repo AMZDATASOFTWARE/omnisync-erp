@@ -424,7 +424,8 @@ Vendedor: "tem café pilão 500g? onde fica?"
 - **4i ✅** Exportação contábil: `exportFiscalBook` gera o livro de saídas em CSV e o XML de arquivamento de cada documento emitido/cancelado, com filtro por período e unidade; download em `/fiscal` (`FiscalExportCard`). Agente conectado à ferramenta.
 - **4j ✅** DANFE simplificado: cupom imprimível (bobina 80mm) de cada documento emitido ou cancelado, com emitente, itens, total, pagamento e chave de acesso — `DanfeDialog`, botão “Cupom” em `/fiscal`.
 - **4k ✅** NF-e modelo 55: o payload canônico aceita `modelo` (65 NFC-e / 55 NF-e), com destinatário identificado obrigatório (CPF 11 / CNPJ 14 dígitos) e natureza da operação própria. `Sale.fiscal_modelo` e `Sale.customer_cpf_cnpj` registram o documento; emissão por `emitFiscalDocument ({ sale_id, modelo, destinatario })` e botão “NF-e” em `/fiscal` (`NfeDialog`). Cupom e badges refletem o modelo.
-- **4e 🔄** Canal WhatsApp do agente + imagem de localização gerada server-side.
+- **4l ✅** Canal de e-mail do agente: `sendAssistantEmail ({ subject, body, to?, all_admins? })` entrega respostas, relatórios (DRE, curva ABC, inventário, livro fiscal, vencimentos) e alertas na caixa de entrada dos usuários registrados — custo zero, sem dependência de API de mensageria. Agente conectado à ferramenta.
+- **4e 🔄** Canal WhatsApp do agente (depende de API paga da Meta) + imagem de localização gerada server-side.
 - **Critério de aceite:** documento autorizado pela SEFAZ em homologação e reprocessamento de fila sem duplicidade.
 
 ### Fase 5 — Backlog arquitetural
