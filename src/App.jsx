@@ -20,6 +20,7 @@ import Fiscal from '@/pages/Fiscal';
 import Compras from '@/pages/Compras';
 import Lotes from '@/pages/Lotes';
 import Inventario from '@/pages/Inventario';
+import Relatorios from '@/pages/Relatorios';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -60,6 +61,7 @@ const AuthenticatedApp = () => {
         <Route path="/compras" element={<Compras />} />
         <Route path="/lotes" element={<Lotes />} />
         <Route path="/inventario" element={<Inventario />} />
+        <Route path="/relatorios" element={<Relatorios />} />
       </Route>
       <Route path="/mobile" element={<Mobile />} />
       <Route path="*" element={<PageNotFound />} />

@@ -425,7 +425,7 @@ Vendedor: "tem café pilão 500g? onde fica?"
 - ✅ Inventário cíclico assistido por zona: tela `/inventario` com seleção de zona do mapa, folha de contagem (saldo do sistema × contado, divergência em tempo real), ajuste automático do `stock_quantity` ao finalizar e histórico com impacto financeiro (`InventoryCount`). Agente conectado com leitura/escrita da entidade.
 - ✅ Workflows agendados (e-mail aos administradores, via `shared/notify.js`): **Alerta de Ruptura** (08h, `alertStockouts`), **Resumo Diário de Vendas** (20h, `dailySalesDigest` — faturamento, ticket médio, mix de pagamento e pendência fiscal) e **Cobrança de Contas a Vencer** (07h, `alertDueEntries` — marca vencidas e alerta os 7 dias seguintes).
 - Multi-loja: `store_id` transversal + RLS por unidade.
-- Relatórios: DRE gerencial, curva ABC, giro por zona.
+- ✅ Relatórios (`/relatorios`, cálculos em `lib/reports.js`, período 7/30/90 dias): DRE gerencial (receita, CMV, lucro bruto, despesas pagas, resultado líquido e margens), curva ABC por faturamento (classes A ≤80%, B ≤95%, C) com margem por SKU e giro por zona (unidades, faturamento e giro sobre o valor de estoque, com link para o mapa).
 
 ---
 

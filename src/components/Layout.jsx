@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, NavLink } from "react-router-dom";
-import { LayoutDashboard, ShoppingCart, Box, MapPin, Users, Banknote, Smartphone, Sparkles, FileText, Truck, Clock, ClipboardCheck } from "lucide-react";
+import { LayoutDashboard, ShoppingCart, Box, MapPin, Users, Banknote, Smartphone, Sparkles, FileText, Truck, Clock, ClipboardCheck, BarChart3 } from "lucide-react";
 import BrandMark from "@/components/BrandMark";
 import ThemeToggle from "@/components/ThemeToggle";
 
@@ -15,6 +15,7 @@ const nav = [
   { to: "/clientes", label: "Clientes", icon: Users },
   { to: "/financeiro", label: "Financeiro", icon: Banknote },
   { to: "/fiscal", label: "Fiscal", icon: FileText },
+  { to: "/relatorios", label: "Relatórios", icon: BarChart3 },
   { to: "/mobile", label: "Consulta Rápida", icon: Smartphone },
   { to: "/assistente", label: "Assistente IA", icon: Sparkles },
 ];
