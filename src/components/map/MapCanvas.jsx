@@ -4,7 +4,7 @@ import { ZoomIn, ZoomOut, Maximize, Hand, Brush } from "lucide-react";
 
 const CELL = 28;
 
-export default function MapCanvas({ map, selectedZoneId, onChange, highlightZoneId, pin, onZoneClick, readOnly = false }) {
+export default function MapCanvas({ map, selectedZoneId, onChange, highlightZoneId, pin, onZoneClick, readOnly = false, minimal = false }) {
   const cols = map.cols || 20;
   const rows = map.rows || 12;
   const zones = map.zones || [];
@@ -62,7 +62,7 @@ export default function MapCanvas({ map, selectedZoneId, onChange, highlightZone
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center gap-2">
+      {!minimal && <div className="flex items-center gap-2">
         <div className="flex rounded-lg border border-slate-200 overflow-hidden">
           <button onClick={() => setTool("brush")}
             className={`px-3 h-8 text-xs flex items-center gap-1.5 ${tool === "brush" ? "bg-emerald-600 text-white" : "text-slate-600 hover:bg-slate-50"}`}>
@@ -77,7 +77,7 @@ export default function MapCanvas({ map, selectedZoneId, onChange, highlightZone
         <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => zoom(0.8)}><ZoomOut className="w-3.5 h-3.5" /></Button>
         <Button variant="outline" size="icon" className="h-8 w-8" onClick={reset}><Maximize className="w-3.5 h-3.5" /></Button>
         <span className="text-xs text-slate-400 ml-1">{Math.round(view.scale * 100)}%</span>
-      </div>
+      </div>}
 
       <div className="rounded-lg bg-slate-50 border border-slate-100 overflow-hidden select-none"
         onWheel={onWheel} onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={stop} onMouseLeave={stop}
@@ -123,13 +123,13 @@ export default function MapCanvas({ map, selectedZoneId, onChange, highlightZone
         </svg>
       </div>
 
-      <div className="flex flex-wrap gap-3">
+      {!minimal && <div className="flex flex-wrap gap-3">
         {zones.map((z) => (
           <span key={z.id} className="inline-flex items-center gap-1.5 text-xs text-slate-600">
             <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: z.color }} /> {z.label}
           </span>
         ))}
-      </div>
+      </div>}
     </div>
   );
 }
