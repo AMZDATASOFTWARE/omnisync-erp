@@ -39,7 +39,7 @@ export default function ZonePanel({ map, products, selectedZoneId, onSelect, onC
     if (selectedZoneId === id) onSelect(null);
   };
 
-  const productCount = (id) => products.filter((p) => p.map_zone_id === id).length;
+  const productCount = (id) => products.filter((p) => (p.zone_id || p.map_zone_id) === id).length;
 
   return (
     <div className="bg-white rounded-xl border border-slate-200/80 p-4 space-y-4 h-fit">
