@@ -1,8 +1,9 @@
 import React from "react";
 import { Outlet, NavLink } from "react-router-dom";
-import { LayoutDashboard, ShoppingCart, Box, MapPin, Users, Banknote, Smartphone, Sparkles, FileText, Truck, Clock, ClipboardCheck, BarChart3 } from "lucide-react";
+import { LayoutDashboard, ShoppingCart, Box, MapPin, Users, Banknote, Smartphone, Sparkles, FileText, Truck, Clock, ClipboardCheck, BarChart3, Store } from "lucide-react";
 import BrandMark from "@/components/BrandMark";
 import ThemeToggle from "@/components/ThemeToggle";
+import StoreSwitcher from "@/components/StoreSwitcher";
 
 const nav = [
   { to: "/", label: "Visão Geral", icon: LayoutDashboard },
@@ -16,6 +17,7 @@ const nav = [
   { to: "/financeiro", label: "Financeiro", icon: Banknote },
   { to: "/fiscal", label: "Fiscal", icon: FileText },
   { to: "/relatorios", label: "Relatórios", icon: BarChart3 },
+  { to: "/lojas", label: "Unidades", icon: Store },
   { to: "/mobile", label: "Consulta Rápida", icon: Smartphone },
   { to: "/assistente", label: "Assistente IA", icon: Sparkles },
 ];
@@ -32,6 +34,7 @@ export default function Layout() {
           </div>
           <ThemeToggle />
         </div>
+        <StoreSwitcher />
         <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
           {nav.map(({ to, label, icon: Icon }) => (
             <NavLink key={to} to={to} end={to === "/"}

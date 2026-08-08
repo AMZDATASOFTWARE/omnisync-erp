@@ -21,6 +21,7 @@ import Compras from '@/pages/Compras';
 import Lotes from '@/pages/Lotes';
 import Inventario from '@/pages/Inventario';
 import Relatorios from '@/pages/Relatorios';
+import Lojas from '@/pages/Lojas';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -62,6 +63,7 @@ const AuthenticatedApp = () => {
         <Route path="/lotes" element={<Lotes />} />
         <Route path="/inventario" element={<Inventario />} />
         <Route path="/relatorios" element={<Relatorios />} />
+        <Route path="/lojas" element={<Lojas />} />
       </Route>
       <Route path="/mobile" element={<Mobile />} />
       <Route path="*" element={<PageNotFound />} />

@@ -424,7 +424,7 @@ Vendedor: "tem café pilão 500g? onde fica?"
 - ✅ `StockBatch` com consumo FEFO e alertas de validade: tela `/lotes` (registro de lote, saldo, bloqueio, painel de vencidos e a vencer em 30 dias), regras em `shared/batch.js` e baixa via `consumeStockFEFO` (dry-run + alocação lote a lote, com ajuste do saldo do produto). Agente conectado com leitura/escrita de `StockBatch` e a ferramenta FEFO.
 - ✅ Inventário cíclico assistido por zona: tela `/inventario` com seleção de zona do mapa, folha de contagem (saldo do sistema × contado, divergência em tempo real), ajuste automático do `stock_quantity` ao finalizar e histórico com impacto financeiro (`InventoryCount`). Agente conectado com leitura/escrita da entidade.
 - ✅ Workflows agendados (e-mail aos administradores, via `shared/notify.js`): **Alerta de Ruptura** (08h, `alertStockouts`), **Resumo Diário de Vendas** (20h, `dailySalesDigest` — faturamento, ticket médio, mix de pagamento e pendência fiscal) e **Cobrança de Contas a Vencer** (07h, `alertDueEntries` — marca vencidas e alerta os 7 dias seguintes).
-- Multi-loja: `store_id` transversal + RLS por unidade.
+- 🔄 Multi-loja: entidade `Store` (unidades da rede, com unidade padrão) + tela `/lojas` para CRUD e seletor de unidade ativa na navegação (`StoreSwitcher` / `use-store`, persistido em `localStorage`). Próximo passo: propagar `store_id` nas entidades transacionais e aplicar RLS por unidade.
 - ✅ Relatórios (`/relatorios`, cálculos em `lib/reports.js`, período 7/30/90 dias): DRE gerencial (receita, CMV, lucro bruto, despesas pagas, resultado líquido e margens), curva ABC por faturamento (classes A ≤80%, B ≤95%, C) com margem por SKU e giro por zona (unidades, faturamento e giro sobre o valor de estoque, com link para o mapa).
 
 ---

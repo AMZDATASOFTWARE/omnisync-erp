@@ -1,0 +1,36 @@
+{
+  "name": "Store",
+  "type": "object",
+  "description": "Unidade/loja da rede. Usada para escopo multi-loja (store_id) dos registros operacionais.",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Nome da unidade"
+    },
+    "code": {
+      "type": "string",
+      "description": "Sigla/c\u00f3digo curto da unidade"
+    },
+    "cnpj": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "is_default": {
+      "type": "boolean",
+      "default": false,
+      "description": "Unidade padr\u00e3o ao abrir o sistema"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name"
+  ]
+}
