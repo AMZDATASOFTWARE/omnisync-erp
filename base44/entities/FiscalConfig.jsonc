@@ -1,0 +1,36 @@
+{
+  "name": "FiscalConfig",
+  "type": "object",
+  "properties": {
+    "razao_social": {
+      "type": "string"
+    },
+    "cnpj": {
+      "type": "string"
+    },
+    "inscricao_estadual": {
+      "type": "string"
+    },
+    "uf": {
+      "type": "string",
+      "default": "CE"
+    },
+    "regime": {
+      "type": "string",
+      "enum": [
+        "simples_nacional",
+        "regime_normal"
+      ],
+      "default": "simples_nacional"
+    },
+    "driver": {
+      "type": "string",
+      "enum": [
+        "sandbox"
+      ],
+      "default": "sandbox",
+      "description": "Emissor fiscal utilizado"
+    }
+  },
+  "required": []
+}

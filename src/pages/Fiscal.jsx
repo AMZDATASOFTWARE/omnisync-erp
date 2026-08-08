@@ -2,18 +2,32 @@ import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useToast } from "@/components/ui/use-toast";
 import SaleFiscalRow from "@/components/fiscal/SaleFiscalRow";
+import FiscalConfigCard from "@/components/fiscal/FiscalConfigCard";
 import { Receipt } from "lucide-react";
 
 export default function Fiscal() {
   const [sales, setSales] = useState([]);
   const [loading, setLoading] = useState(true);
   const [emittingId, setEmittingId] = useState(null);
+  const [config, setConfig] = useState(null);
   const { toast } = useToast();
 
   const load = async () => {
-    const data = await base44.entities.Sale.filter({ status: "concluida" }, "-created_date", 100);
+    const [data, configs] = await Promise.all([
+      base44.entities.Sale.filter({ status: "concluida" }, "-created_date", 100),
+      base44.entities.FiscalConfig.list("-created_date", 1),
+    ]);
     setSales(data);
+    setConfig(configs[0] || {});
     setLoading(false);
+  };
+
+  const saveConfig = async (form) => {
+    const saved = config?.id
+      ? await base44.entities.FiscalConfig.update(config.id, form)
+      : await base44.entities.FiscalConfig.create(form);
+    setConfig(saved);
+    toast({ title: "Configurações fiscais salvas" });
   };
 
   useEffect(() => { load(); }, []);
@@ -43,6 +57,8 @@ export default function Fiscal() {
           {pendentes} venda(s) aguardando emissão · ambiente de homologação (sandbox)
         </p>
       </div>
+
+      {config && <FiscalConfigCard config={config} onSave={saveConfig} />}
 
       <div className="bg-white rounded-xl border overflow-x-auto">
         <table className="w-full">

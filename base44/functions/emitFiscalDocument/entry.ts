@@ -21,7 +21,9 @@ export default async function (req) {
     }
 
     const products = await base44.entities.Product.list('name', 500);
-    const payload = buildFiscalPayload(sale, products, body.config || {});
+    const configs = await base44.entities.FiscalConfig.list('-created_date', 1);
+    const config = configs[0] || {};
+    const payload = buildFiscalPayload(sale, products, config);
 
     const errors = validatePayload(payload);
     if (errors.length) {
@@ -29,7 +31,7 @@ export default async function (req) {
       return Response.json({ success: false, message: errors.join(' '), payload });
     }
 
-    const driver = getDriver(body.driver || 'sandbox');
+    const driver = getDriver(config.driver || 'sandbox');
     const result = await driver.emit(payload);
 
     if (!result.success) {
