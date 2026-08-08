@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { Search, X } from "lucide-react";
+import { Search, X, ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
 import { brl } from "@/lib/format";
 import ProductResult from "@/components/mobile/ProductResult";
 
@@ -32,6 +33,10 @@ export default function Mobile() {
   return (
     <div className="min-h-screen bg-[#0e1420] p-4 pb-10">
       <div className="max-w-md mx-auto space-y-4 pt-4">
+        <Link to="/" className="inline-flex items-center gap-1.5 text-slate-400 hover:text-white text-sm">
+          <ArrowLeft className="w-4 h-4" /> Voltar ao sistema
+        </Link>
+
         <div className="text-center">
           <h1 className="text-white text-xl font-semibold">Consulta Rápida</h1>
           <p className="text-slate-400 text-sm mt-1">Busque um produto: preço, estoque e onde ele está na loja.</p>
