@@ -47,16 +47,16 @@ export default function Lotes() {
   return (
     <div className="p-6 md:p-8 space-y-5">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Lotes & Validade</h1>
-        <p className="text-sm text-slate-500 mt-1">
-          Controle por lote com consumo FEFO — o lote mais próximo do vencimento sai primeiro.
+        <h1 className="font-heading text-3xl font-bold text-foreground">Lotes & Validade</h1>
+        <p className="text-sm mt-2" style={{ color: "rgba(242,246,248,.65)" }}>
+          Controlar por lote com consumo FEFO — o lote mais próximo do vencimento sai primeiro.
         </p>
       </div>
 
       <div className="grid lg:grid-cols-4 gap-5">
         <div className="lg:col-span-3 space-y-5">
           <ExpiryAlerts batches={batches} />
-          <div className="bg-white rounded-xl border border-slate-200/80 overflow-hidden">
+          <div className="brand-card !p-0 overflow-hidden">
             <BatchTable batches={batches} onDelete={remove} onToggleBlock={toggleBlock} />
           </div>
         </div>

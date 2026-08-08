@@ -1,0 +1,37 @@
+/* Camada de reconciliação: neutraliza as classes claras herdadas do tema antigo,
+   remapeando-as para os tokens da marca (fundo espaço profundo + superfícies elevadas).
+   Toda UI nova deve usar diretamente os tokens/classes .brand-* de src/index.css. */
+
+@layer utilities {
+  .bg-white { background-color: var(--brand-surface) !important; }
+  .bg-slate-50, .bg-slate-100, .bg-slate-50\/60 { background-color: var(--brand-muted) !important; }
+  .bg-\[\#f6f7f9\] { background-color: var(--brand-background) !important; }
+  .bg-\[\#0e1420\] { background-color: var(--brand-surface) !important; }
+
+  .text-slate-900, .text-slate-800 { color: var(--brand-text) !important; }
+  .text-slate-700, .text-slate-600 { color: rgba(242, 246, 248, .75) !important; }
+  .text-slate-500, .text-slate-400, .text-slate-300 { color: rgba(242, 246, 248, .5) !important; }
+
+  .border-slate-100, .border-slate-200, .border-slate-200\/80, .border-slate-50 {
+    border-color: rgba(71, 184, 235, .18) !important;
+  }
+
+  .text-emerald-600, .text-emerald-700 { color: var(--brand-primary) !important; }
+  .bg-emerald-50, .bg-emerald-600, .bg-emerald-700 { background-color: rgba(31, 213, 249, .15) !important; }
+  .bg-emerald-600, .bg-emerald-700 { color: var(--brand-primary) !important; }
+  .hover\:bg-emerald-700:hover { background-color: rgba(31, 213, 249, .25) !important; }
+  .hover\:bg-slate-50:hover, .hover\:bg-slate-50\/60:hover { background-color: rgba(31, 213, 249, .08) !important; }
+
+  .bg-amber-50 { background-color: rgba(246, 168, 35, .15) !important; }
+  .text-amber-600, .text-amber-700 { color: var(--brand-signal-amber) !important; }
+  .border-amber-300 { border-color: rgba(246, 168, 35, .35) !important; }
+  .bg-red-50, .bg-rose-50 { background-color: rgba(239, 67, 67, .15) !important; }
+  .text-red-600, .text-red-700 { color: var(--brand-destructive) !important; }
+  .bg-blue-50 { background-color: rgba(30, 63, 174, .2) !important; }
+  .text-blue-600 { color: var(--brand-primary) !important; }
+  .bg-orange-100 { background-color: rgba(246, 168, 35, .2) !important; }
+  .text-orange-700 { color: var(--brand-signal-amber) !important; }
+  .bg-red-100 { background-color: rgba(239, 67, 67, .18) !important; }
+  .bg-amber-100 { background-color: rgba(246, 168, 35, .18) !important; }
+  .bg-slate-800 { background-color: var(--brand-muted) !important; }
+}

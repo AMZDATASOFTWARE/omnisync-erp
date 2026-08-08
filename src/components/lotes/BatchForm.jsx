@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
+
+const Label = ({ children }) => <span className="brand-label">{children}</span>;
+const Input = ({ className = "", ...props }) => <input className={`brand-input ${className}`} {...props} />;
 
 const EMPTY = { product_id: "", lot_code: "", expiry_date: "", quantity: "", cost: "" };
 
@@ -34,11 +34,11 @@ export default function BatchForm({ products, onCreate }) {
   };
 
   return (
-    <form onSubmit={submit} className="bg-white rounded-xl border border-slate-200/80 p-4 space-y-3">
-      <h2 className="text-sm font-semibold text-slate-900">Novo lote</h2>
+    <form onSubmit={submit} className="brand-card space-y-3">
+      <h4>Registrar lote</h4>
       <div>
         <Label className="text-xs text-slate-500">Produto</Label>
-        <select className="w-full h-9 mt-1 rounded-md border border-input bg-transparent px-3 text-sm"
+        <select className="brand-input mt-1"
           value={form.product_id} onChange={(e) => set("product_id", e.target.value)} required>
           <option value="">Selecione…</option>
           {products.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
@@ -63,9 +63,9 @@ export default function BatchForm({ products, onCreate }) {
           <Input className="mt-1" type="number" min="0" step="any" value={form.cost} onChange={(e) => set("cost", e.target.value)} />
         </div>
       </div>
-      <Button type="submit" disabled={saving} className="w-full">
-        <Plus className="w-4 h-4" /> {saving ? "Salvando…" : "Registrar lote"}
-      </Button>
+      <button type="submit" disabled={saving} className="brand-btn-primary-card w-full">
+        <Plus className="w-4 h-4" strokeWidth={2} /> {saving ? "Salvando…" : "Registrar lote"}
+      </button>
     </form>
   );
 }

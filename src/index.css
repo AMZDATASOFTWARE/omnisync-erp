@@ -1,85 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+@import './styles/legacy-surface-overrides.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-    --font-heading: ui-sans-serif, system-ui, sans-serif;
-    --font-body: ui-sans-serif, system-ui, sans-serif;
-    --font-display: ui-sans-serif, system-ui, sans-serif;
-    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
+  :root{--background:218 62% 5%;--foreground:200 30% 96%;--card:222 57% 9%;--card-foreground:200 30% 96%;--popover:222 57% 9%;--popover-foreground:200 30% 96%;--primary:190 95% 55%;--primary-foreground:218 62% 5%;--secondary:226 71% 40%;--secondary-foreground:0 0% 100%;--accent:43 96% 56%;--accent-foreground:0 0% 9%;--muted:222 47% 11%;--muted-foreground:226 71% 40%;--destructive:0 84% 60%;--destructive-foreground:0 0% 100%;--border:222 47% 11%;--input:222 47% 11%;--ring:190 95% 55%;--radius:10px;--font-heading:'Space Grotesk', sans-serif;--font-body:'Inter', sans-serif;--font-display:'Space Grotesk', sans-serif;--font-heading-line-height:1.1;--font-heading-letter-spacing:-0.03em;--font-body-line-height:1.6;--font-mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;--chart-1:190 95% 55%;--chart-2:160 84% 39%;--chart-3:43 96% 56%;--chart-4:226 71% 40%;--chart-5:0 84% 60%;--sidebar-background:222 57% 9%;--sidebar-foreground:200 30% 96%;--sidebar-primary:190 95% 55%;--sidebar-primary-foreground:218 62% 5%;--sidebar-accent:222 47% 11%;--sidebar-accent-foreground:200 30% 96%;--sidebar-border:222 47% 11%;--sidebar-ring:190 95% 55%;}
+  .dark{--background:218 62% 5%;--foreground:200 30% 96%;--card:222 57% 9%;--card-foreground:200 30% 96%;--popover:222 57% 9%;--popover-foreground:200 30% 96%;--primary:190 95% 55%;--primary-foreground:218 62% 5%;--secondary:226 71% 40%;--secondary-foreground:0 0% 100%;--accent:43 96% 56%;--accent-foreground:0 0% 9%;--muted:222 47% 11%;--muted-foreground:226 71% 40%;--destructive:0 84% 60%;--destructive-foreground:0 0% 100%;--border:222 47% 11%;--input:222 47% 11%;--ring:190 95% 55%;}
+  :root{--brand-primary:#1FD5F9;--brand-on-primary:#050B15;--brand-secondary:#1E3FAE;--brand-accent:#FBBE23;--brand-background:#050B15;--brand-surface:#0A1224;--brand-text:#F2F6F8;--brand-muted:#0F172A;--brand-muted-foreground:#1E3FAE;--brand-border:#0F172A;--brand-destructive:#EF4343;--brand-accent-success:#10B981;--brand-signal-amber:#F6A823;--brand-signal-mint:#2CEDAC;--brand-landing-line:#173247;--brand-landing-cyan-soft:#10384E;--brand-pure-white:#FFFFFF;--brand-font-heading:'Space Grotesk', sans-serif;--brand-font-body:'Inter', sans-serif;--brand-font-heading-line-height:1.1;--brand-font-heading-letter-spacing:-0.03em;--brand-font-body-line-height:1.6;--brand-font-weight-regular:400;--brand-font-weight-medium:500;--brand-font-weight-semibold:600;--brand-font-weight-bold:700;--brand-sp-1:4px;--brand-sp-2:8px;--brand-sp-3:16px;--brand-sp-4:24px;--brand-sp-5:32px;--brand-sp-6:48px;--brand-sp-7:64px;--brand-radius-none:0px;--brand-radius-sm:4px;--brand-radius-md:10px;--brand-radius-lg:16px;--brand-radius-full:9999px;--brand-radius:10px;--brand-shadow-none:none;--brand-shadow-sm:0 1px 2px rgba(0,0,0,0.5);--brand-shadow-md:0 4px 12px rgba(0,0,0,0.5);--brand-shadow-glow:0 0 40px rgba(31, 213, 249, 0.35);--brand-shadow:0 4px 12px rgba(0,0,0,0.5);}
 }
 
-
+@layer base{h1,h2,h3,h4,h5,h6{font-family:var(--font-heading);line-height:var(--font-heading-line-height);letter-spacing:var(--font-heading-letter-spacing)}body{font-family:var(--font-body);line-height:var(--font-body-line-height)}}
 
 @layer base {
   * {
@@ -90,3 +23,57 @@
     @apply bg-background text-foreground font-body;
   }
 }
+
+/* ── Brand components (ported 1:1 from the design system) ───────────── */
+
+/* Buttons · Primary Button · Default (#amz-primary-default) */
+.brand-btn-primary{height:52px;padding:0 28px;border-radius:var(--brand-radius-md);background:var(--brand-primary);border:0;color:var(--brand-on-primary);font-family:var(--brand-font-heading);font-weight:var(--brand-font-weight-bold);font-size:16px;cursor:pointer;box-shadow:var(--brand-shadow-glow);display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap}
+.brand-btn-primary svg{width:18px;height:18px;flex:none}
+
+/* Buttons · Primary Button · On dark blue card (#amz-primary-card) */
+.brand-btn-primary-card{height:40px;padding:0 24px;border-radius:var(--brand-radius-md);background:var(--brand-primary);border:0;color:var(--brand-on-primary);font-family:var(--brand-font-heading);font-weight:var(--brand-font-weight-bold);font-size:14px;cursor:pointer;box-shadow:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;transition:box-shadow 200ms,filter 200ms;filter:none}
+.brand-btn-primary-card svg{width:16px;height:16px;flex:none}
+
+/* Buttons · Outline Button · Default (#amz-outline) */
+.brand-btn-outline{height:52px;padding:0 28px;border-radius:var(--brand-radius-md);background:transparent;border:1px solid rgba(71,180,235,.18);color:var(--brand-text);font-family:var(--brand-font-heading);font-weight:var(--brand-font-weight-semibold);font-size:16px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap}
+
+/* Buttons · Secondary Button · Default (#amz-secondary) */
+.brand-btn-secondary{height:40px;padding:0 24px;border-radius:var(--brand-radius-md);background:rgba(31,213,249,.15);border:0;outline:1px solid rgba(71,180,235,.18);color:var(--brand-primary);font-family:var(--brand-font-heading);font-weight:var(--brand-font-weight-bold);font-size:14px;cursor:pointer;box-shadow:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;transition:box-shadow 200ms,filter 200ms;filter:none}
+.brand-btn-secondary svg{width:16px;height:16px;flex:none}
+
+/* Buttons · Text link · Header (#t1) */
+.brand-link-header{color:rgba(242,246,248,.65);font-family:var(--brand-font-body);font-weight:var(--brand-font-weight-medium);font-size:14px;text-decoration:none;white-space:nowrap}
+
+/* Cards · Feature Card — Default (#fc-default) */
+.brand-card{box-sizing:border-box;width:100%;min-width:0;background:var(--brand-surface);border:1px solid rgba(71,184,235,.18);border-radius:var(--brand-radius-lg);padding:22px;font-family:var(--brand-font-body);color:var(--brand-text)}
+.brand-card .fc-icon{box-sizing:border-box;width:40px;height:40px;border-radius:var(--brand-radius-md);margin-bottom:12px;background:rgba(31,213,249,.15);border:1px solid rgba(71,184,235,.18);display:flex;align-items:center;justify-content:center;color:var(--brand-primary)}
+.brand-card h4{font-family:var(--brand-font-heading);font-weight:var(--brand-font-weight-bold);font-size:15px;line-height:1.25;color:var(--brand-text);margin:0 0 6px}
+.brand-card p{font-size:13px;color:rgba(242,246,248,.65);line-height:1.6;margin:0}
+
+/* Cards · Diário Card — Default (#diario-default) — painel de destaque com glow */
+.brand-card-glow{box-sizing:border-box;width:100%;min-width:0;background:var(--brand-surface);border:1px solid rgba(71,184,235,.18);border-radius:var(--brand-radius-lg);padding:24px;text-align:left;box-shadow:0 0 40px rgba(31,213,249,.35);font-family:var(--brand-font-body);color:var(--brand-text)}
+.brand-metrics{display:flex;flex-wrap:wrap;gap:18px;border-top:1px solid rgba(71,184,235,.18);padding-top:12px}
+.brand-metric{display:flex;align-items:center;gap:7px;min-width:0}
+.brand-metric i{width:7px;height:7px;border-radius:9999px;flex:none}
+.brand-metric i.cyan{background:var(--brand-primary)}
+.brand-metric i.amber{background:var(--brand-signal-amber)}
+.brand-metric i.mint{background:var(--brand-signal-mint)}
+.brand-metric small{font-size:10px;line-height:1.25;color:rgba(242,246,248,.4);text-transform:uppercase;letter-spacing:.06em}
+.brand-metric b{font-family:var(--brand-font-heading);font-size:14px;line-height:1.3;font-weight:var(--brand-font-weight-bold);color:var(--brand-text)}
+
+/* Badges · Section Label (#badge-section) */
+.brand-badge-section{display:inline-flex;align-items:center;gap:8px;border:1px solid hsla(200,80%,60%,.18);background:hsla(190,95%,55%,.15);color:var(--brand-primary);border-radius:var(--brand-radius-full);padding:6px 16px;font-family:var(--brand-font-heading);font-size:12px;font-weight:var(--brand-font-weight-medium);letter-spacing:.2em;text-transform:uppercase;white-space:nowrap}
+.brand-badge-section svg{width:14px;height:14px;flex:none}
+.badge-section-dot{width:6px;height:6px;border-radius:var(--brand-radius-full);background:var(--brand-primary);box-shadow:0 0 8px var(--brand-primary);flex:none}
+
+/* Badges · Highlight Tag (#badge-highlight) */
+.brand-badge-highlight{display:inline-flex;align-items:center;background:var(--brand-primary);color:var(--brand-background);font-family:var(--brand-font-heading);font-size:11px;font-weight:var(--brand-font-weight-bold);letter-spacing:.1em;line-height:16px;padding:4px 14px;border-radius:var(--brand-radius-full);white-space:nowrap;text-transform:uppercase}
+
+/* Inputs — compostos a partir das primitivas da marca */
+.brand-input{width:100%;height:40px;padding:0 12px;border-radius:var(--brand-radius-md);background:var(--brand-muted);border:1px solid rgba(71,184,235,.18);color:var(--brand-text);font-family:var(--brand-font-body);font-size:14px;outline:none;transition:border-color 150ms,box-shadow 150ms}
+.brand-input::placeholder{color:rgba(242,246,248,.4)}
+.brand-input:focus{border-color:var(--brand-primary);box-shadow:0 0 0 3px rgba(31,213,249,.15)}
+.brand-label{font-family:var(--brand-font-body);font-size:12px;color:rgba(242,246,248,.65)}
+
+/* Malha holográfica / campo estelar (Promo Banner .stars) */
+.brand-stars{position:absolute;z-index:0;inset:0;opacity:.7;pointer-events:none;background-image:radial-gradient(circle at 9% 18%,rgba(31,213,249,.75) 0 1.5px,transparent 2px),radial-gradient(circle at 23% 70%,rgba(31,213,249,.55) 0 1.5px,transparent 2px),radial-gradient(circle at 68% 24%,rgba(31,213,249,.65) 0 1.5px,transparent 2px),radial-gradient(circle at 87% 63%,rgba(31,213,249,.7) 0 1.5px,transparent 2px),radial-gradient(circle at 95% 34%,rgba(31,213,249,.5) 0 1.5px,transparent 2px)}

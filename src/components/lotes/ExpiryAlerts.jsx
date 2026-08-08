@@ -8,26 +8,26 @@ export default function ExpiryAlerts({ batches }) {
   const criticos = live.filter((b) => ["critico", "proximo"].includes(expiryStatus(b.expiry_date)));
 
   const cards = [
-    { label: "Lotes vencidos", value: vencidos.length, icon: AlertTriangle, cls: "text-red-600 bg-red-50" },
-    { label: "Vencem em 30 dias", value: criticos.length, icon: CalendarClock, cls: "text-amber-600 bg-amber-50" },
-    { label: "Lotes ativos", value: live.length, icon: PackageCheck, cls: "text-emerald-600 bg-emerald-50" },
+    { label: "Lotes vencidos", value: vencidos.length, icon: AlertTriangle },
+    { label: "Vencem em 30 dias", value: criticos.length, icon: CalendarClock },
+    { label: "Lotes ativos", value: live.length, icon: PackageCheck },
   ];
 
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-3 gap-3">
-        {cards.map(({ label, value, icon: Icon, cls }) => (
-          <div key={label} className="bg-white rounded-xl border border-slate-200/80 p-4">
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${cls}`}><Icon className="w-4 h-4" /></div>
-            <p className="text-2xl font-semibold text-slate-900 mt-2">{value}</p>
-            <p className="text-xs text-slate-500">{label}</p>
+        {cards.map(({ label, value, icon: Icon }) => (
+          <div key={label} className="brand-card">
+            <div className="fc-icon"><Icon className="w-5 h-5" strokeWidth={2} /></div>
+            <p className="font-heading text-2xl font-bold text-foreground">{value}</p>
+            <p className="text-xs" style={{ color: "rgba(242,246,248,.65)" }}>{label}</p>
           </div>
         ))}
       </div>
 
       {!!(vencidos.length || criticos.length) && (
-        <div className="bg-white rounded-xl border border-slate-200/80 p-4">
-          <p className="text-sm font-semibold text-slate-900 mb-2">Próximos a sair (FEFO)</p>
+        <div className="brand-card">
+          <h4>Próximos a sair (FEFO)</h4>
           <ul className="space-y-1.5">
             {sortFEFO([...vencidos, ...criticos]).slice(0, 6).map((b) => (
               <li key={b.id} className="text-xs flex justify-between text-slate-600">

@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Plus, Search } from "lucide-react";
 import ProductTable from "@/components/products/ProductTable";
 import ProductForm from "@/components/products/ProductForm";
@@ -47,18 +45,18 @@ export default function Produtos() {
     <div className="p-6 md:p-8 space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Estoque</h1>
-          <p className="text-sm text-slate-500 mt-1">{products.length} produtos cadastrados</p>
+          <h1 className="font-heading text-3xl font-bold text-foreground">Estoque</h1>
+          <p className="text-sm mt-2" style={{ color: "rgba(242,246,248,.65)" }}>{products.length} produtos cadastrados</p>
         </div>
-        <Button onClick={() => { setEditing(null); setOpen(true); }} className="bg-emerald-600 hover:bg-emerald-700">
-          <Plus className="w-4 h-4 mr-1.5" /> Novo produto
-        </Button>
+        <button onClick={() => { setEditing(null); setOpen(true); }} className="brand-btn-primary-card">
+          <Plus className="w-4 h-4" strokeWidth={2} /> Cadastrar produto
+        </button>
       </div>
 
       <div className="relative max-w-md">
         <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-        <Input value={search} onChange={(e) => setSearch(e.target.value)}
-          placeholder="Buscar por nome, código, marca, categoria…" className="pl-9 bg-white" />
+        <input value={search} onChange={(e) => setSearch(e.target.value)}
+          placeholder="Buscar por nome, código, marca, categoria…" className="brand-input pl-9" />
       </div>
 
       {loading ? (
