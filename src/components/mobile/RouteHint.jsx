@@ -15,7 +15,7 @@ export default function RouteHint({ product, onRoute }) {
   };
 
   return (
-    <div className="bg-white rounded-2xl p-4 space-y-3">
+    <div className="bg-card border border-border rounded-2xl p-4 space-y-3">
       <button onClick={go} disabled={loading}
         className="w-full h-12 rounded-xl bg-sky-600 active:bg-sky-700 text-white font-medium flex items-center justify-center gap-2 disabled:opacity-60">
         {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Navigation className="w-5 h-5" />}

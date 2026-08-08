@@ -7,6 +7,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 import ProductResult from "@/components/mobile/ProductResult";
 import BarcodeScanner from "@/components/mobile/BarcodeScanner";
 import OfflineBadge from "@/components/mobile/OfflineBadge";
+import ThemeToggle from "@/components/ThemeToggle";
 import { useOfflineCache } from "@/hooks/use-offline-cache";
 
 export default function Mobile() {
@@ -52,33 +53,36 @@ export default function Mobile() {
   if (selected) return <ProductResult product={selected} map={map} onBack={() => setSelected(null)} />;
 
   return (
-    <div className="min-h-screen bg-[#0e1420] p-4 pb-10">
+    <div className="min-h-screen bg-background p-4 pb-10">
       <div className="max-w-md mx-auto space-y-4 pt-4">
-        <Link to="/" className="inline-flex items-center gap-1.5 text-slate-400 hover:text-white text-sm py-2">
-          <ArrowLeft className="w-4 h-4" /> Voltar ao sistema
-        </Link>
+        <div className="flex items-center justify-between">
+          <Link to="/" className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground text-sm py-2">
+            <ArrowLeft className="w-4 h-4" /> Voltar ao sistema
+          </Link>
+          <ThemeToggle />
+        </div>
 
         <div className="text-center">
-          <h1 className="text-white text-xl font-semibold">Consulta Rápida</h1>
-          <p className="text-slate-400 text-sm mt-1">Preço, estoque e onde o produto está na loja.</p>
+          <h1 className="text-foreground text-xl font-semibold">Consulta Rápida</h1>
+          <p className="text-muted-foreground text-sm mt-1">Preço, estoque e onde o produto está na loja.</p>
         </div>
 
         <div className="flex gap-2">
           <div className="relative flex-1">
-            <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground z-10" />
             <input ref={inputRef} autoFocus value={q} onChange={(e) => setQ(e.target.value)}
               inputMode="search" aria-label="Buscar produto"
               placeholder="Nome, código ou marca…"
-              className="w-full h-14 pl-12 pr-12 rounded-2xl bg-white text-slate-900 text-base outline-none focus:ring-2 focus:ring-emerald-400" />
+              className="w-full h-14 pl-12 pr-12 rounded-2xl bg-card text-foreground border border-border text-base outline-none focus:ring-2 focus:ring-primary" />
             {q && (
               <button onClick={() => { setQ(""); inputRef.current?.focus(); }} aria-label="Limpar busca"
-                className="absolute right-2 top-1/2 -translate-y-1/2 h-11 w-11 flex items-center justify-center text-slate-400">
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-11 w-11 flex items-center justify-center text-muted-foreground">
                 <X className="w-5 h-5" />
               </button>
             )}
           </div>
           <button onClick={() => setScanning(true)} aria-label="Ler código de barras"
-            className="h-14 w-14 shrink-0 rounded-2xl bg-emerald-600 active:bg-emerald-700 text-white flex items-center justify-center">
+            className="h-14 w-14 shrink-0 rounded-2xl bg-primary text-primary-foreground active:opacity-90 flex items-center justify-center">
             <ScanLine className="w-6 h-6" />
           </button>
         </div>
@@ -94,12 +98,12 @@ export default function Mobile() {
         <div className="space-y-2">
           {results.map((p) => (
             <button key={p.id} onClick={() => setSelected(p)}
-              className="w-full text-left bg-white/5 hover:bg-white/10 active:bg-white/15 rounded-2xl p-4 min-h-[64px] flex items-center justify-between gap-3 transition-colors">
+              className="w-full text-left bg-card border border-border hover:bg-muted rounded-2xl p-4 min-h-[64px] flex items-center justify-between gap-3 transition-colors">
               <div className="min-w-0">
-                <p className="text-white font-medium truncate">{p.name}</p>
-                <p className="text-slate-400 text-xs mt-0.5">{p.sku || p.barcode || p.brand || p.category || ""}</p>
+                <p className="text-foreground font-medium truncate">{p.name}</p>
+                <p className="text-muted-foreground text-xs mt-0.5">{p.sku || p.barcode || p.brand || p.category || ""}</p>
               </div>
-              <p className="text-emerald-400 font-semibold text-lg shrink-0">{brl(p.price)}</p>
+              <p className="text-primary font-semibold text-lg shrink-0">{brl(p.price)}</p>
             </button>
           ))}
         </div>

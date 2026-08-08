@@ -22,7 +22,7 @@ export default function Dashboard() {
     });
   }, []);
 
-  if (loading) return <div className="p-8 text-sm" style={{ color: "rgba(242,246,248,.5)" }}>Carregando painel…</div>;
+  if (loading) return <div className="p-8 text-sm" style={{ color: "var(--brand-text-faint)" }}>Carregando painel…</div>;
 
   const today = new Date().toDateString();
   const todaySales = sales.filter((s) => new Date(s.created_date).toDateString() === today && s.status !== "cancelada");
@@ -40,7 +40,7 @@ export default function Dashboard() {
           Operação conectada
         </span>
         <h1 className="font-heading text-3xl font-bold text-foreground mt-4">Visão Geral</h1>
-        <p className="text-sm mt-2" style={{ color: "rgba(242,246,248,.65)" }}>
+        <p className="text-sm mt-2" style={{ color: "var(--brand-text-soft)" }}>
           Estoque, caixa, financeiro e clientes em um único painel.
         </p>
       </div>
@@ -70,7 +70,7 @@ export default function Dashboard() {
             <ul className="mt-4 space-y-2">
               {lowStock.slice(0, 6).map((p) => (
                 <li key={p.id} className="flex items-center justify-between text-sm">
-                  <span className="truncate pr-2" style={{ color: "rgba(242,246,248,.75)" }}>{p.name}</span>
+                  <span className="truncate pr-2" style={{ color: "var(--brand-text-soft)" }}>{p.name}</span>
                   <span className="shrink-0 font-heading text-xs" style={{ color: "var(--brand-signal-amber)" }}>
                     {p.stock_quantity ?? 0} {p.unit || "un"}
                   </span>
