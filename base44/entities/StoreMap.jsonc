@@ -1,0 +1,64 @@
+{
+  "name": "StoreMap",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "default": "Loja Principal"
+    },
+    "cols": {
+      "type": "integer",
+      "default": 20
+    },
+    "rows": {
+      "type": "integer",
+      "default": 12
+    },
+    "zones": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "gondola",
+              "prateleira",
+              "geladeira",
+              "caixa",
+              "deposito",
+              "entrada",
+              "outro"
+            ]
+          },
+          "color": {
+            "type": "string"
+          },
+          "cells": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "integer"
+                },
+                "y": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

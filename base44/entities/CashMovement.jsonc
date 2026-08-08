@@ -1,0 +1,27 @@
+{
+  "name": "CashMovement",
+  "type": "object",
+  "properties": {
+    "session_id": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "sangria",
+        "reforco"
+      ]
+    },
+    "amount": {
+      "type": "number"
+    },
+    "note": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "session_id",
+    "type",
+    "amount"
+  ]
+}

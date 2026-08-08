@@ -1,0 +1,35 @@
+{
+  "name": "CashSession",
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": [
+        "aberto",
+        "fechado"
+      ],
+      "default": "aberto"
+    },
+    "opening_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "closing_amount": {
+      "type": "number"
+    },
+    "opened_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "closed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "operator": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "status"
+  ]
+}

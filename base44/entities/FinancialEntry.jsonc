@@ -1,0 +1,48 @@
+{
+  "name": "FinancialEntry",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "pagar",
+        "receber"
+      ]
+    },
+    "description": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pendente",
+        "pago",
+        "vencido"
+      ],
+      "default": "pendente"
+    },
+    "category": {
+      "type": "string",
+      "description": "Categoria do plano de contas"
+    },
+    "related_party": {
+      "type": "string",
+      "description": "Cliente ou fornecedor"
+    },
+    "sale_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "type",
+    "description",
+    "amount"
+  ]
+}
