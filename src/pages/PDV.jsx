@@ -4,12 +4,14 @@ import ProductSearch from "@/components/pdv/ProductSearch";
 import Cart from "@/components/pdv/Cart";
 import CashControls from "@/components/pdv/CashControls";
 import OpenSessionCard from "@/components/pdv/OpenSessionCard";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function PDV() {
   const [session, setSession] = useState(null);
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
   const load = async () => {
     const [sessions, prods] = await Promise.all([
@@ -53,6 +55,14 @@ export default function PDV() {
         ? base44.entities.Customer.update(customer.id, { total_spent: (customer.total_spent || 0) + total })
         : null,
     ].filter(Boolean));
+    // Fiscal conectado: emite a NFC-e automaticamente após a venda
+    const res = await base44.functions.invoke("emitFiscalDocument", { sale_id: sale.id });
+    const fiscal = res.data || {};
+    toast({
+      title: fiscal.success ? `NFC-e ${fiscal.numero} emitida` : "Venda registrada — NFC-e pendente",
+      description: fiscal.success ? "Documento disponível na aba Fiscal." : fiscal.message,
+      variant: fiscal.success ? undefined : "destructive",
+    });
     setCart([]);
     load();
   };

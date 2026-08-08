@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { brl } from "@/lib/format";
 import StatCard from "@/components/dashboard/StatCard";
 import SalesChart from "@/components/dashboard/SalesChart";
-import { ShoppingCart, TrendingUp, PackageX, CalendarClock } from "lucide-react";
+import { ShoppingCart, TrendingUp, PackageX, CalendarClock, Receipt } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export default function Dashboard() {
@@ -28,6 +28,7 @@ export default function Dashboard() {
   const today = new Date().toDateString();
   const todaySales = sales.filter((s) => new Date(s.created_date).toDateString() === today && s.status !== "cancelada");
   const revenue = todaySales.reduce((a, s) => a + (s.total || 0), 0);
+  const fiscalPendentes = sales.filter((s) => s.status !== "cancelada" && s.fiscal_status !== "emitida").length;
   const lowStock = products.filter((p) => p.active !== false && (p.stock_quantity || 0) <= (p.min_stock || 0));
 
   return (
@@ -37,11 +38,12 @@ export default function Dashboard() {
         <p className="text-sm text-slate-500 mt-1">Tudo conectado: estoque, caixa, financeiro e clientes.</p>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={ShoppingCart} label="Vendas hoje" value={todaySales.length} tone="emerald" />
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        <Link to="/pdv"><StatCard icon={ShoppingCart} label="Vendas hoje" value={todaySales.length} tone="emerald" /></Link>
         <StatCard icon={TrendingUp} label="Faturamento hoje" value={brl(revenue)} tone="blue" />
-        <StatCard icon={PackageX} label="Estoque baixo" value={lowStock.length} tone="amber" />
-        <StatCard icon={CalendarClock} label="Contas pendentes" value={entries.length} tone="rose" />
+        <Link to="/produtos"><StatCard icon={PackageX} label="Estoque baixo" value={lowStock.length} tone="amber" /></Link>
+        <Link to="/financeiro"><StatCard icon={CalendarClock} label="Contas pendentes" value={entries.length} tone="rose" /></Link>
+        <Link to="/fiscal"><StatCard icon={Receipt} label="NFC-e pendentes" value={fiscalPendentes} tone="blue" /></Link>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">
