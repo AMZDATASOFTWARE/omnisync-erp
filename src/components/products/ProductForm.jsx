@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ProductFiscalFields from "./ProductFiscalFields";
 import ProductLocationFields from "./ProductLocationFields";
+import ProductDataLookup from "./ProductDataLookup";
 
 const UNITS = ["un", "kg", "g", "l", "ml", "m", "m2", "cx", "pct"];
 
@@ -69,6 +70,18 @@ export default function ProductForm({ product, map, onSave, onCancel }) {
 
   return (
     <form onSubmit={submit} className="space-y-4">
+      <ProductDataLookup
+        query={f.barcode || f.name}
+        onApply={(d) => setF((prev) => ({
+          ...prev,
+          name: d.name || prev.name,
+          brand: d.brand || prev.brand,
+          category: d.category || prev.category,
+          barcode: d.gtin || prev.barcode,
+          ncm: d.ncm || prev.ncm,
+          cest: d.cest || prev.cest,
+        }))}
+      />
       <div className="grid grid-cols-2 gap-3">
         <Field label="Nome *" className="col-span-2">
           <Input required value={f.name} onChange={set("name")} placeholder="Ex: Chave Phillips 16mm Thompson" />
