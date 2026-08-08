@@ -4,6 +4,7 @@ import MapCanvas from "@/components/map/MapCanvas";
 import ZonePanel from "@/components/map/ZonePanel";
 import ZoneInventory from "@/components/map/ZoneInventory";
 import ProductLinker from "@/components/map/ProductLinker";
+import ShelfPanel from "@/components/map/ShelfPanel";
 
 export default function MapaLoja() {
   const [map, setMap] = useState(null);
@@ -11,7 +12,8 @@ export default function MapaLoja() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [highlight, setHighlight] = useState(null); // { zoneId, pin, name }
+  const [highlight, setHighlight] = useState(null); // { zoneId, pin, name, shelfId }
+  const [selectedShelfId, setSelectedShelfId] = useState(null);
 
   useEffect(() => {
     Promise.all([
@@ -43,13 +45,22 @@ export default function MapaLoja() {
     setMap(updated);
     setSaving(true);
     await base44.entities.StoreMap.update(updated.id, {
-      name: updated.name, cols: updated.cols, rows: updated.rows, zones: updated.zones,
+      name: updated.name, cols: updated.cols, rows: updated.rows, zones: updated.zones, shelves: updated.shelves || [],
     });
     setSaving(false);
   };
 
-  const linkProduct = async (product, zone) => {
-    const patch = { zone_id: zone.id, map_zone_id: zone.id, shelf_identifier: product.shelf_identifier || zone.label };
+  const moveShelf = (shelfId, x, y) => {
+    persist({ ...map, shelves: (map.shelves || []).map((s) => (s.id === shelfId ? { ...s, x, y } : s)) });
+  };
+
+  const linkProduct = async (product, zone, shelf, level) => {
+    const patch = {
+      zone_id: zone.id,
+      map_zone_id: zone.id,
+      shelf_identifier: shelf ? shelf.label : product.shelf_identifier || zone.label,
+      pos_z: level || 0,
+    };
     setProducts((ps) => ps.map((p) => (p.id === product.id ? { ...p, ...patch } : p)));
     await base44.entities.Product.update(product.id, patch);
   };
@@ -64,8 +75,12 @@ export default function MapaLoja() {
     const zoneId = product.zone_id || product.map_zone_id;
     const zone = (map.zones || []).find((z) => z.id === zoneId);
     const cell = zone?.cells?.[0];
+    const shelf = (map.shelves || []).find((s) => s.zone_id === zoneId && s.label === product.shelf_identifier);
     setSelectedZoneId(zoneId || null);
-    setHighlight({ zoneId, name: product.name, pin: cell ? { x: cell.x, y: cell.y } : null });
+    setHighlight({
+      zoneId, name: product.name, shelfId: shelf?.id,
+      pin: shelf ? { x: shelf.x, y: shelf.y } : cell ? { x: cell.x, y: cell.y } : null,
+    });
   };
 
   if (loading) return <div className="p-8 text-slate-400 text-sm">Carregando mapa da loja…</div>;
@@ -96,14 +111,18 @@ export default function MapaLoja() {
         <div className="lg:col-span-3 space-y-5">
           <div className="bg-white rounded-xl border border-slate-200/80 p-4">
             <MapCanvas map={map} selectedZoneId={selectedZoneId} onChange={persist}
-              highlightZoneId={highlight?.zoneId} pin={highlight?.pin} onZoneClick={setSelectedZoneId} />
+              highlightZoneId={highlight?.zoneId} pin={highlight?.pin} onZoneClick={setSelectedZoneId}
+              selectedShelfId={selectedShelfId} onMoveShelf={moveShelf} highlightShelfId={highlight?.shelfId} />
           </div>
           {selectedZone && <ZoneInventory zone={selectedZone} products={products} />}
         </div>
         <div className="space-y-5">
           <ZonePanel map={map} products={products} selectedZoneId={selectedZoneId}
             onSelect={setSelectedZoneId} onChange={persist} />
+          <ShelfPanel map={map} zone={selectedZone} onChange={persist}
+            selectedShelfId={selectedShelfId} onSelectShelf={setSelectedShelfId} />
           <ProductLinker products={products} zone={selectedZone}
+            shelves={(map.shelves || []).filter((s) => s.zone_id === selectedZone?.id)}
             onLink={linkProduct} onUnlink={unlinkProduct} onHighlight={highlightProduct} />
         </div>
       </div>

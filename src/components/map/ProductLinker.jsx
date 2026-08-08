@@ -3,9 +3,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, MapPin, Link2, X } from "lucide-react";
 
-export default function ProductLinker({ products, zone, onLink, onUnlink, onHighlight }) {
+export default function ProductLinker({ products, zone, shelves = [], onLink, onUnlink, onHighlight }) {
   const [q, setQ] = useState("");
+  const [shelfId, setShelfId] = useState("");
+  const [level, setLevel] = useState("");
   const query = q.toLowerCase().trim();
+  const shelf = shelves.find((s) => s.id === shelfId) || null;
 
   const results = query
     ? products.filter((p) => [p.name, p.sku, p.barcode].some((f) => (f || "").toLowerCase().includes(query))).slice(0, 8)
@@ -23,6 +26,21 @@ export default function ProductLinker({ products, zone, onLink, onUnlink, onHigh
         <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar SKU, EAN ou nome…" className="pl-9" />
       </div>
 
+      {zone && shelves.length > 0 && (
+        <div className="grid grid-cols-2 gap-2">
+          <select value={shelfId} onChange={(e) => { setShelfId(e.target.value); setLevel(""); }}
+            className="h-9 rounded-md border border-input bg-transparent px-2 text-sm text-slate-700">
+            <option value="">Sem gôndola</option>
+            {shelves.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
+          </select>
+          <select value={level} onChange={(e) => setLevel(e.target.value)} disabled={!shelf}
+            className="h-9 rounded-md border border-input bg-transparent px-2 text-sm text-slate-700 disabled:opacity-50">
+            <option value="">Nível</option>
+            {[...Array(shelf?.levels || 0)].map((_, i) => <option key={i} value={i + 1}>{i + 1}º nível</option>)}
+          </select>
+        </div>
+      )}
+
       {results.length > 0 && (
         <div className="border border-slate-100 rounded-lg divide-y max-h-56 overflow-y-auto">
           {results.map((p) => (
@@ -32,7 +50,7 @@ export default function ProductLinker({ products, zone, onLink, onUnlink, onHigh
                 <p className="text-[11px] text-slate-400">{p.sku || p.barcode || "sem código"}</p>
               </button>
               {zone && (
-                <Button size="sm" variant="outline" className="h-7 text-xs shrink-0" onClick={() => onLink(p, zone)}>
+                <Button size="sm" variant="outline" className="h-7 text-xs shrink-0" onClick={() => onLink(p, zone, shelf, level ? Number(level) : null)}>
                   <MapPin className="w-3 h-3 mr-1" /> Alocar
                 </Button>
               )}
@@ -51,6 +69,11 @@ export default function ProductLinker({ products, zone, onLink, onUnlink, onHigh
             <div key={p.id} className="flex items-center gap-2 text-sm py-1">
               <button className="flex-1 text-left truncate text-slate-700 hover:text-emerald-600" onClick={() => onHighlight(p)}>
                 {p.name}
+                {p.shelf_identifier && (
+                  <span className="text-[11px] text-slate-400 ml-1.5">
+                    {p.shelf_identifier}{p.pos_z ? ` · ${p.pos_z}º nível` : ""}
+                  </span>
+                )}
               </button>
               <Button variant="ghost" size="icon" className="h-6 w-6 text-rose-400" onClick={() => onUnlink(p)}>
                 <X className="w-3.5 h-3.5" />

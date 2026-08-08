@@ -398,7 +398,8 @@ Vendedor: "tem café pilão 500g? onde fica?"
 ### Fase 2 — Mapa 2D & Alocação ✅ (núcleo) / 🔄 (vetor)
 - `MapCanvas`, `ZonePanel`, `ZoneInventory` operacionais; alocação por zona.
 - ✅ Renderização SVG com zoom/pan, alocação bidirecional de SKUs (`ProductLinker`) e deep link `/mapa?zone=&product=` com pin pulsante.
-- 🔄 Pendente: `polygon[]` vetorial, gôndolas/níveis (`shelves`), `ProductPlacement` 1:N, `traffic_nodes` + wayfinding.
+- ✅ Gôndolas/níveis (`shelves`): criação por zona (`ShelfPanel`), reposicionamento no canvas (ferramenta “Gôndola”), alocação de SKU a gôndola + nível (`shelf_identifier` / `pos_z`) e pino no destaque.
+- 🔄 Pendente: `polygon[]` vetorial, `ProductPlacement` 1:N, `traffic_nodes` + wayfinding.
 - **Critério de aceite:** localizar qualquer SKU cadastrado em ≤ 2 cliques a partir do mapa.
 
 ### Fase 3 — Mobile Fast & PDV ✅

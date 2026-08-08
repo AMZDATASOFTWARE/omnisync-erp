@@ -1,10 +1,10 @@
 import React, { useCallback, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ZoomIn, ZoomOut, Maximize, Hand, Brush } from "lucide-react";
+import { ZoomIn, ZoomOut, Maximize, Hand, Brush, Rows3 } from "lucide-react";
 
 const CELL = 28;
 
-export default function MapCanvas({ map, selectedZoneId, onChange, highlightZoneId, pin, onZoneClick, readOnly = false, minimal = false }) {
+export default function MapCanvas({ map, selectedZoneId, onChange, highlightZoneId, pin, onZoneClick, readOnly = false, minimal = false, selectedShelfId, onMoveShelf, highlightShelfId }) {
   const cols = map.cols || 20;
   const rows = map.rows || 12;
   const zones = map.zones || [];
@@ -28,6 +28,10 @@ export default function MapCanvas({ map, selectedZoneId, onChange, highlightZone
   }, [zones, selectedZoneId, map, onChange, readOnly]);
 
   const startCell = (x, y) => {
+    if (tool === "shelf") {
+      if (!readOnly && selectedShelfId && onMoveShelf) onMoveShelf(selectedShelfId, x, y);
+      return;
+    }
     const zone = zoneAt(x, y);
     if (zone && onZoneClick) onZoneClick(zone.id);
     if (readOnly || tool !== "brush" || !selectedZoneId) return;
@@ -72,6 +76,10 @@ export default function MapCanvas({ map, selectedZoneId, onChange, highlightZone
             className={`px-3 h-8 text-xs flex items-center gap-1.5 border-l border-slate-200 ${tool === "pan" ? "bg-slate-800 text-white" : "text-slate-600 hover:bg-slate-50"}`}>
             <Hand className="w-3.5 h-3.5" /> Mover
           </button>
+          <button onClick={() => setTool("shelf")}
+            className={`px-3 h-8 text-xs flex items-center gap-1.5 border-l border-slate-200 ${tool === "shelf" ? "bg-indigo-600 text-white" : "text-slate-600 hover:bg-slate-50"}`}>
+            <Rows3 className="w-3.5 h-3.5" /> Gôndola
+          </button>
         </div>
         <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => zoom(1.2)}><ZoomIn className="w-3.5 h-3.5" /></Button>
         <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => zoom(0.8)}><ZoomOut className="w-3.5 h-3.5" /></Button>
@@ -107,6 +115,24 @@ export default function MapCanvas({ map, selectedZoneId, onChange, highlightZone
                 <text key={z.id} x={c.x * CELL + 3} y={c.y * CELL + 11} fontSize="8" fill="#0f172a" opacity="0.7" pointerEvents="none">
                   {z.label}
                 </text>
+              );
+            })}
+
+            {(map.shelves || []).map((s) => {
+              const on = highlightShelfId === s.id || selectedShelfId === s.id;
+              const w = (s.width || 1) * CELL - 4;
+              const h = (s.height || 1) * CELL - 4;
+              const levels = s.levels || 1;
+              return (
+                <g key={s.id} transform={`translate(${s.x * CELL + 2} ${s.y * CELL + 2})`} pointerEvents="none">
+                  <rect width={w} height={h} rx="3" fill="#1e293b" opacity={on ? 0.9 : 0.65}
+                    stroke={on ? "#6366f1" : "#0f172a"} strokeWidth={on ? 2 : 0.5} />
+                  {[...Array(Math.max(levels - 1, 0))].map((_, i) => (
+                    <line key={i} x1="0" x2={w} y1={((i + 1) * h) / levels} y2={((i + 1) * h) / levels}
+                      stroke="#94a3b8" strokeWidth="0.5" opacity="0.6" />
+                  ))}
+                  <text x="3" y="9" fontSize="7" fill="#f8fafc">{s.label}</text>
+                </g>
               );
             })}
 
