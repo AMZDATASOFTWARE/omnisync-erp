@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
-import { humanReadable, brl } from '../../shared/locate.js';
+import { humanReadable, brl, productZoneId, productShelf } from '../../shared/locate.js';
 
 export default async function (req) {
   try {
@@ -19,7 +19,7 @@ export default async function (req) {
 
     const maps = await base44.entities.StoreMap.list('', 1);
     const map = maps[0];
-    const zone = map?.zones?.find((z) => z.id === product.map_zone_id);
+    const zone = map?.zones?.find((z) => z.id === productZoneId(product));
 
     if (!zone) {
       return Response.json({
@@ -28,7 +28,7 @@ export default async function (req) {
       });
     }
 
-    const readable = humanReadable(zone, product.shelf_label);
+    const readable = humanReadable(zone, productShelf(product), product.pos_z);
     return Response.json({
       sku: product.sku || product.id,
       found: true,
@@ -37,9 +37,11 @@ export default async function (req) {
         zone_id: zone.id,
         zone_label: zone.label,
         zone_type: zone.type,
-        shelf_label: product.shelf_label || '',
+        shelf_label: productShelf(product),
+        level: product.pos_z ?? null,
         human_readable: readable,
       },
+      map_url: `/mapa?zone=${encodeURIComponent(zone.id)}&product=${encodeURIComponent(product.id)}`,
       map_deep_link: `/mobile?sku=${encodeURIComponent(product.sku || product.id)}`,
       voice_answer: `${product.name} está em ${readable}. Preço ${brl(product.price)}, ${product.stock_quantity || 0} ${product.unit || 'un'} em estoque.`,
     });

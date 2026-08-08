@@ -7,7 +7,7 @@ export function brl(v) {
 export function stockStatus(p) {
   const qty = p.stock_quantity || 0;
   if (qty <= 0) return "out";
-  if (qty <= (p.min_stock || 0)) return "low";
+  if (qty <= (p.stock_min ?? p.min_stock ?? 0)) return "low";
   return "in_stock";
 }
 
@@ -35,14 +35,21 @@ const LEVEL_HINTS = {
 };
 
 // Gera o texto humano único usado pelo app, pelo agente e pelo WhatsApp
-export function humanReadable(zone, shelfLabel) {
+export function humanReadable(zone, shelfLabel, level) {
   if (!zone) return "Localização não cadastrada";
   const parts = [zone.label];
-  if (shelfLabel) {
-    const num = parseInt(String(shelfLabel).replace(/\D/g, ""), 10);
-    parts.push(LEVEL_HINTS[num] || shelfLabel);
-  }
+  if (shelfLabel) parts.push(shelfLabel);
+  const num = level != null && level !== "" ? Number(level) : parseInt(String(shelfLabel || "").replace(/\D/g, ""), 10);
+  if (!Number.isNaN(num) && LEVEL_HINTS[num]) parts.push(LEVEL_HINTS[num]);
   return parts.join(", ");
+}
+
+export function productZoneId(p) {
+  return p.zone_id || p.map_zone_id || "";
+}
+
+export function productShelf(p) {
+  return p.shelf_identifier || p.shelf_label || "";
 }
 
 export function productSummary(p) {
@@ -57,7 +64,7 @@ export function productSummary(p) {
     stock_quantity: p.stock_quantity || 0,
     unit: p.unit || "un",
     stock_status: stockStatus(p),
-    has_location: !!p.map_zone_id,
-    specs: { ncm: p.ncm || "", cest: p.cest || "", lot: p.lot || "", expiry_date: p.expiry_date || "" },
+    has_location: !!productZoneId(p),
+    specs: { ncm: p.ncm || "", cest: p.cest || "", cfop: p.cfop_default || "", lot: p.lot || "", expiry_date: p.expiry_date || "" },
   };
 }

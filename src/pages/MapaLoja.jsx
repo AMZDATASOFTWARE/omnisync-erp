@@ -23,6 +23,19 @@ export default function MapaLoja() {
       setMap(m);
       setProducts(prods);
       setLoading(false);
+
+      const params = new URLSearchParams(window.location.search);
+      const zoneParam = params.get("zone");
+      const productParam = params.get("product");
+      const prod = productParam && prods.find((p) => p.id === productParam);
+      if (prod) {
+        const zid = prod.zone_id || prod.map_zone_id;
+        const cell = m.zones?.find((z) => z.id === zid)?.cells?.[0];
+        setSelectedZoneId(zid || zoneParam || null);
+        setHighlight({ zoneId: zid, name: prod.name, pin: cell ? { x: cell.x, y: cell.y } : null });
+      } else if (zoneParam) {
+        setSelectedZoneId(zoneParam);
+      }
     });
   }, []);
 

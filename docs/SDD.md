@@ -397,13 +397,15 @@ Vendedor: "tem café pilão 500g? onde fica?"
 
 ### Fase 2 — Mapa 2D & Alocação ✅ (núcleo) / 🔄 (vetor)
 - `MapCanvas`, `ZonePanel`, `ZoneInventory` operacionais; alocação por zona.
+- ✅ Renderização SVG com zoom/pan, alocação bidirecional de SKUs (`ProductLinker`) e deep link `/mapa?zone=&product=` com pin pulsante.
 - 🔄 Pendente: `polygon[]` vetorial, gôndolas/níveis (`shelves`), `ProductPlacement` 1:N, `traffic_nodes` + wayfinding.
 - **Critério de aceite:** localizar qualquer SKU cadastrado em ≤ 2 cliques a partir do mapa.
 
-### Fase 3 — Mobile Fast & PDV ✅ (núcleo) / 🔄 (scanner)
+### Fase 3 — Mobile Fast & PDV ✅
 - PDV com sessão de caixa, sangria/reforço, carrinho, baixa de estoque, financeiro e CRM encadeados.
 - Mobile de consulta rápida com busca instantânea e retorno de preço/saldo/localização.
-- 🔄 Pendente: leitura por câmera, cache offline PWA, miniatura de mapa embutida no resultado.
+- ✅ Leitura por câmera (`BarcodeDetector`), busca com debounce, miniatura de mapa com pin e deep link `/mobile?sku=`.
+- 🔄 Pendente: cache offline PWA.
 - **Critério de aceite:** consulta completa em ≤ 2 toques; venda concluída em ≤ 15 s.
 
 ### Fase 4 — IA Tools & Driver Fiscal 🔄

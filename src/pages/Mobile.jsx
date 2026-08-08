@@ -22,9 +22,17 @@ export default function Mobile() {
       base44.entities.Product.list("name", 500),
       base44.entities.StoreMap.list("", 1),
     ]).then(([p, m]) => {
-      setProducts(p.filter((x) => x.active !== false));
+      const list = p.filter((x) => x.active !== false);
+      setProducts(list);
       setMap(m[0] || null);
       setLoading(false);
+
+      const sku = new URLSearchParams(window.location.search).get("sku");
+      if (sku) {
+        const found = list.find((x) => x.sku === sku || x.barcode === sku || x.id === sku);
+        if (found) setSelected(found);
+        else setQ(sku);
+      }
     });
   }, []);
 

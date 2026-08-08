@@ -5,9 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import { AlertTriangle } from "lucide-react";
 
 export default function ZoneInventory({ zone, products }) {
-  const items = products.filter((p) => p.map_zone_id === zone.id);
+  const items = products.filter((p) => (p.zone_id || p.map_zone_id) === zone.id);
   const valor = items.reduce((a, p) => a + (p.cost_price || p.price || 0) * (p.stock_quantity || 0), 0);
-  const repor = items.filter((p) => (p.stock_quantity || 0) <= (p.min_stock || 0));
+  const repor = items.filter((p) => (p.stock_quantity || 0) <= (p.stock_min ?? p.min_stock ?? 0));
 
   return (
     <div className="bg-white rounded-xl border border-slate-200/80 p-4 space-y-3">
@@ -39,12 +39,12 @@ export default function ZoneInventory({ zone, products }) {
       ) : (
         <div className="max-h-56 overflow-y-auto divide-y">
           {items.map((p) => {
-            const baixo = (p.stock_quantity || 0) <= (p.min_stock || 0);
+            const baixo = (p.stock_quantity || 0) <= (p.stock_min ?? p.min_stock ?? 0);
             return (
               <div key={p.id} className="py-2 flex items-center justify-between text-sm">
                 <div className="min-w-0 pr-2">
                   <p className="text-slate-800 truncate">{p.name}</p>
-                  <p className="text-[11px] text-slate-400">{p.shelf_label || "sem prateleira"} · {brl(p.price)}</p>
+                  <p className="text-[11px] text-slate-400">{p.shelf_identifier || p.shelf_label || "sem prateleira"} · {brl(p.price)}</p>
                 </div>
                 <Badge variant="outline" className={baixo ? "text-amber-700 border-amber-300 bg-amber-50 shrink-0" : "shrink-0"}>
                   {baixo && <AlertTriangle className="w-3 h-3 mr-1" />}
