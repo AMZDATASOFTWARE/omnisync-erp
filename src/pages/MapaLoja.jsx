@@ -5,6 +5,8 @@ import ZonePanel from "@/components/map/ZonePanel";
 import ZoneInventory from "@/components/map/ZoneInventory";
 import ProductLinker from "@/components/map/ProductLinker";
 import ShelfPanel from "@/components/map/ShelfPanel";
+import HeatControls from "@/components/map/HeatControls";
+import { computeHeat } from "@/lib/heat";
 
 export default function MapaLoja() {
   const [map, setMap] = useState(null);
@@ -15,13 +17,17 @@ export default function MapaLoja() {
   const [highlight, setHighlight] = useState(null); // { zoneId, pin, name, shelfId }
   const [selectedShelfId, setSelectedShelfId] = useState(null);
   const [placements, setPlacements] = useState([]);
+  const [sales, setSales] = useState([]);
+  const [heatMode, setHeatMode] = useState("off");
 
   useEffect(() => {
     Promise.all([
       base44.entities.StoreMap.list("", 1),
       base44.entities.Product.list("name", 500),
       base44.entities.ProductPlacement.list("", 500),
-    ]).then(async ([maps, prods, places]) => {
+      base44.entities.Sale.list("-created_date", 300),
+    ]).then(async ([maps, prods, places, sls]) => {
+      setSales(sls);
       setPlacements(places);
       let m = maps[0];
       if (!m) m = await base44.entities.StoreMap.create({ name: "Loja Principal", cols: 20, rows: 12, zones: [] });
@@ -125,6 +131,7 @@ export default function MapaLoja() {
 
   const zones = map.zones || [];
   const selectedZone = zones.find((z) => z.id === selectedZoneId) || zones[0];
+  const heat = computeHeat(heatMode, zones, products, sales);
 
   return (
     <div className="p-6 md:p-8 space-y-5">
@@ -150,11 +157,13 @@ export default function MapaLoja() {
           <div className="bg-white rounded-xl border border-slate-200/80 p-4">
             <MapCanvas map={map} selectedZoneId={selectedZoneId} onChange={persist}
               highlightZoneId={highlight?.zoneId} pin={highlight?.pin} onZoneClick={setSelectedZoneId}
-              selectedShelfId={selectedShelfId} onMoveShelf={moveShelf} highlightShelfId={highlight?.shelfId} />
+              selectedShelfId={selectedShelfId} onMoveShelf={moveShelf} highlightShelfId={highlight?.shelfId}
+              heat={heat} />
           </div>
           {selectedZone && <ZoneInventory zone={selectedZone} products={products} />}
         </div>
         <div className="space-y-5">
+          <HeatControls mode={heatMode} onChange={setHeatMode} heat={heat} zones={zones} />
           <ZonePanel map={map} products={products} selectedZoneId={selectedZoneId}
             onSelect={setSelectedZoneId} onChange={persist} />
           <ShelfPanel map={map} zone={selectedZone} onChange={persist}

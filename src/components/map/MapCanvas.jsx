@@ -2,10 +2,11 @@ import React, { useCallback, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ZoomIn, ZoomOut, Maximize, Hand, Brush, Rows3, PenTool, Check, Trash2 } from "lucide-react";
 import PolygonLayer from "@/components/map/PolygonLayer";
+import { HEAT_COLOR } from "@/lib/heat";
 
 const CELL = 28;
 
-export default function MapCanvas({ map, selectedZoneId, onChange, highlightZoneId, pin, onZoneClick, readOnly = false, minimal = false, selectedShelfId, onMoveShelf, highlightShelfId, route = null }) {
+export default function MapCanvas({ map, selectedZoneId, onChange, highlightZoneId, pin, onZoneClick, readOnly = false, minimal = false, selectedShelfId, onMoveShelf, highlightShelfId, route = null, heat = null }) {
   const cols = map.cols || 20;
   const rows = map.rows || 12;
   const zones = map.zones || [];
@@ -142,6 +143,14 @@ export default function MapCanvas({ map, selectedZoneId, onChange, highlightZone
                   </rect>
                 );
               })
+            )}
+
+            {heat && zones.map((z) =>
+              (z.cells || []).map((c) => (
+                <rect key={`h-${z.id}-${c.x}-${c.y}`} x={c.x * CELL} y={c.y * CELL} width={CELL - 1} height={CELL - 1}
+                  rx="3" pointerEvents="none" fill={HEAT_COLOR[heat.mode]}
+                  opacity={0.12 + 0.68 * (heat.zones[z.id]?.intensity || 0)} />
+              ))
             )}
 
             <PolygonLayer zones={zones} W={W} H={H} highlightZoneId={highlightZoneId}

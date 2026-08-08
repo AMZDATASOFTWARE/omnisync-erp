@@ -381,7 +381,7 @@ Vendedor: "tem café pilão 500g? onde fica?"
 **Coordenadas visuais:** o `map_url` abre `/mapa` com a zona realçada; evolução prevista é a geração server-side de um PNG do recorte da planta com pino, anexado como imagem na resposta do WhatsApp.
 
 ### 4.4 Governança
-- **Permissões mínimas**: leitura de `Product` e `StoreMap`; escrita **negada** por padrão.
+- **Permissões**: decisão revisada — o agente opera como um usuário completo, com leitura **e escrita** em todas as entidades do ERP e acesso a todas as tools; toda operação de escrita exige confirmação explícita do usuário antes de executar.
 - **Sem alucinação de preço**: toda resposta numérica origina de tool; sem match → "não encontrei".
 - **Auditoria**: cada tool call registra query e produto resolvido para calibrar o dicionário de busca.
 - **Escalonamento**: pedido fora do escopo (desconto, cancelamento) → encaminhar a humano.
@@ -395,20 +395,21 @@ Vendedor: "tem café pilão 500g? onde fica?"
 - Layout, navegação e Dashboard com KPIs conectados.
 - **Entregável:** modelo de dados estável + este documento.
 
-### Fase 2 — Mapa 2D & Alocação ✅ (núcleo) / 🔄 (vetor)
+### Fase 2 — Mapa 2D & Alocação ✅
 - `MapCanvas`, `ZonePanel`, `ZoneInventory` operacionais; alocação por zona.
 - ✅ Renderização SVG com zoom/pan, alocação bidirecional de SKUs (`ProductLinker`) e deep link `/mapa?zone=&product=` com pin pulsante.
 - ✅ Gôndolas/níveis (`shelves`): criação por zona (`ShelfPanel`), reposicionamento no canvas (ferramenta “Gôndola”), alocação de SKU a gôndola + nível (`shelf_identifier` / `pos_z`) e pino no destaque.
 - ✅ `ProductPlacement` 1:N: um SKU pode ocupar várias posições (zona + gôndola + nível), com posição principal (`is_primary`) espelhada em `Product` e promoção automática ao remover a principal. `getProductLocation` retorna `placements` e `other_locations`.
 - ✅ Wayfinding: rota a pé da zona "entrada" até o produto (BFS na grade, zonas entrada/corredor/caixa são caminháveis), via `getRouteToProduct` — passos numerados no mobile ("Como chegar") e traçado animado no mapa.
-- 🔄 Pendente: `polygon[]` vetorial, cache offline PWA.
+- ✅ `polygon[]` vetorial: ferramenta “Polígono” no `MapCanvas` (coordenadas normalizadas 0..1), renderização em `PolygonLayer`, edição/limpeza por zona.
+- ✅ Camadas analíticas (3.5): mapa de calor por zona de giro (vendas), ruptura e valorização (`HeatControls` + `lib/heat.js`), derivadas de `Sale` + `Product`.
 - **Critério de aceite:** localizar qualquer SKU cadastrado em ≤ 2 cliques a partir do mapa.
 
 ### Fase 3 — Mobile Fast & PDV ✅
 - PDV com sessão de caixa, sangria/reforço, carrinho, baixa de estoque, financeiro e CRM encadeados.
 - Mobile de consulta rápida com busca instantânea e retorno de preço/saldo/localização.
 - ✅ Leitura por câmera (`BarcodeDetector`), busca com debounce, miniatura de mapa com pin e deep link `/mobile?sku=`.
-- 🔄 Pendente: cache offline PWA.
+- ✅ Cache offline (stale-while-revalidate em `localStorage` via `use-offline-cache`) com selo de última sincronização; PWA com manifest.
 - **Critério de aceite:** consulta completa em ≤ 2 toques; venda concluída em ≤ 15 s.
 
 ### Fase 4 — IA Tools & Driver Fiscal 🔄
