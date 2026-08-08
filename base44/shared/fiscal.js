@@ -110,7 +110,32 @@ const sandboxDriver = {
       message: "Documento emitido no ambiente de homologação (sandbox).",
     };
   },
+  async cancel(chave, justificativa) {
+    return {
+      success: true,
+      protocolo: "SANDBOX-CANC-" + Date.now(),
+      chave,
+      justificativa,
+      message: "Cancelamento registrado no ambiente de homologação (sandbox).",
+    };
+  },
 };
+
+// Regra da SEFAZ: NFC-e só pode ser cancelada em até 30 minutos da autorização,
+// com justificativa de no mínimo 15 caracteres.
+export const CANCEL_WINDOW_MINUTES = 30;
+
+export function validateCancel(sale, justificativa) {
+  const errors = [];
+  if (sale.fiscal_status !== "emitida") errors.push("Só é possível cancelar documentos já emitidos.");
+  if (!justificativa || justificativa.trim().length < 15)
+    errors.push("A justificativa deve ter no mínimo 15 caracteres.");
+  const emitidoEm = new Date(sale.updated_date || sale.created_date).getTime();
+  const minutos = (Date.now() - emitidoEm) / 60000;
+  if (minutos > CANCEL_WINDOW_MINUTES)
+    errors.push(`Prazo de cancelamento esgotado (${CANCEL_WINDOW_MINUTES} minutos após a emissão).`);
+  return errors;
+}
 
 export function getDriver(name) {
   // Novos emissores (Focus NFe, NFe.io, TecnoSpeed) entram aqui sem alterar o restante do sistema.

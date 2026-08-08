@@ -3,13 +3,17 @@ import { base44 } from "@/api/base44Client";
 import { useToast } from "@/components/ui/use-toast";
 import SaleFiscalRow from "@/components/fiscal/SaleFiscalRow";
 import FiscalConfigCard from "@/components/fiscal/FiscalConfigCard";
-import { Receipt } from "lucide-react";
+import CancelDialog from "@/components/fiscal/CancelDialog";
+import { Button } from "@/components/ui/button";
+import { Receipt, RefreshCw } from "lucide-react";
 
 export default function Fiscal() {
   const [sales, setSales] = useState([]);
   const [loading, setLoading] = useState(true);
   const [emittingId, setEmittingId] = useState(null);
   const [config, setConfig] = useState(null);
+  const [cancelTarget, setCancelTarget] = useState(null);
+  const [reprocessing, setReprocessing] = useState(false);
   const { toast } = useToast();
 
   const load = async () => {
@@ -45,17 +49,44 @@ export default function Fiscal() {
     await load();
   };
 
-  const pendentes = sales.filter((s) => s.fiscal_status !== "emitida").length;
+  const handleCancel = async (justificativa) => {
+    const res = await base44.functions.invoke("cancelFiscalDocument", {
+      sale_id: cancelTarget.id, justificativa,
+    });
+    const data = res.data || {};
+    toast({
+      title: data.success ? "Documento cancelado" : "Não foi possível cancelar",
+      description: data.message,
+      variant: data.success ? undefined : "destructive",
+    });
+    await load();
+  };
+
+  const handleReprocess = async () => {
+    setReprocessing(true);
+    const res = await base44.functions.invoke("reprocessFiscalQueue", {});
+    toast({ title: "Fila reprocessada", description: res.data?.message });
+    setReprocessing(false);
+    await load();
+  };
+
+  const pendentes = sales.filter((s) => s.fiscal_status === "pendente").length;
 
   return (
     <div className="p-5 md:p-8 space-y-6">
-      <div>
-        <h1 className="text-xl font-semibold tracking-tight flex items-center gap-2">
-          <Receipt className="w-5 h-5 text-emerald-600" /> Fiscal — NFC-e
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          {pendentes} venda(s) aguardando emissão · ambiente de homologação (sandbox)
-        </p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight flex items-center gap-2">
+            <Receipt className="w-5 h-5 text-emerald-600" /> Fiscal — NFC-e
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            {pendentes} venda(s) aguardando emissão · ambiente de homologação (sandbox)
+          </p>
+        </div>
+        <Button variant="outline" disabled={reprocessing || !pendentes} onClick={handleReprocess}>
+          <RefreshCw className={`w-4 h-4 ${reprocessing ? "animate-spin" : ""}`} />
+          {reprocessing ? "Reprocessando..." : "Reprocessar fila"}
+        </Button>
       </div>
 
       {config && <FiscalConfigCard config={config} onSave={saveConfig} />}
@@ -79,12 +110,16 @@ export default function Fiscal() {
               <tr><td colSpan={6} className="py-10 text-center text-sm text-muted-foreground">Nenhuma venda registrada ainda.</td></tr>
             ) : (
               sales.map((s) => (
-                <SaleFiscalRow key={s.id} sale={s} emitting={emittingId === s.id} onEmit={handleEmit} />
+                <SaleFiscalRow key={s.id} sale={s} emitting={emittingId === s.id} onEmit={handleEmit}
+                  onCancel={setCancelTarget} />
               ))
             )}
           </tbody>
         </table>
       </div>
+
+      <CancelDialog open={!!cancelTarget} onOpenChange={(v) => !v && setCancelTarget(null)}
+        title="Cancelar NFC-e" onConfirm={handleCancel} />
     </div>
   );
 }

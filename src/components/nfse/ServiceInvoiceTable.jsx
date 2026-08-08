@@ -9,7 +9,7 @@ const badge = {
   cancelada: "bg-amber-100 text-amber-700",
 };
 
-export default function ServiceInvoiceTable({ invoices, emittingId, onEmit, onDelete }) {
+export default function ServiceInvoiceTable({ invoices, emittingId, onEmit, onCancel, onDelete }) {
   if (!invoices.length) {
     return <p className="text-sm text-muted-foreground py-10 text-center">Nenhuma NFS-e registrada ainda.</p>;
   }
@@ -44,7 +44,12 @@ export default function ServiceInvoiceTable({ invoices, emittingId, onEmit, onDe
                 </span>
               </td>
               <td className="py-3 px-4 text-right whitespace-nowrap">
-                {n.status !== "emitida" && (
+                {n.status === "emitida" && (
+                  <Button size="sm" variant="ghost" className="text-destructive" onClick={() => onCancel(n)}>
+                    Cancelar
+                  </Button>
+                )}
+                {n.status !== "emitida" && n.status !== "cancelada" && (
                   <Button size="sm" disabled={emittingId === n.id} onClick={() => onEmit(n)}>
                     {emittingId === n.id ? "Emitindo..." : "Emitir"}
                   </Button>

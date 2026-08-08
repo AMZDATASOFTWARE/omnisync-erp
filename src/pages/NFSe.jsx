@@ -4,6 +4,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { FileSignature } from "lucide-react";
 import ServiceInvoiceForm from "@/components/nfse/ServiceInvoiceForm";
 import ServiceInvoiceTable from "@/components/nfse/ServiceInvoiceTable";
+import CancelDialog from "@/components/fiscal/CancelDialog";
 import { withStore, ofStore } from "@/lib/scope";
 
 export default function NFSe() {
@@ -11,6 +12,7 @@ export default function NFSe() {
   const [config, setConfig] = useState(null);
   const [loading, setLoading] = useState(true);
   const [emittingId, setEmittingId] = useState(null);
+  const [cancelTarget, setCancelTarget] = useState(null);
   const { toast } = useToast();
 
   const load = async () => {
@@ -44,6 +46,17 @@ export default function NFSe() {
     await load();
   };
 
+  const cancel = async (motivo) => {
+    const res = await base44.functions.invoke("cancelNFSe", { invoice_id: cancelTarget.id, motivo });
+    const data = res.data || {};
+    toast({
+      title: data.success ? "NFS-e cancelada" : "Não foi possível cancelar",
+      description: data.message,
+      variant: data.success ? undefined : "destructive",
+    });
+    await load();
+  };
+
   const remove = async (invoice) => {
     await base44.entities.ServiceInvoice.delete(invoice.id);
     await load();
@@ -67,8 +80,12 @@ export default function NFSe() {
       {loading ? (
         <p className="text-sm text-muted-foreground py-10 text-center">Carregando…</p>
       ) : (
-        <ServiceInvoiceTable invoices={invoices} emittingId={emittingId} onEmit={emit} onDelete={remove} />
+        <ServiceInvoiceTable invoices={invoices} emittingId={emittingId} onEmit={emit}
+          onCancel={setCancelTarget} onDelete={remove} />
       )}
+
+      <CancelDialog open={!!cancelTarget} onOpenChange={(v) => !v && setCancelTarget(null)}
+        title="Cancelar NFS-e" onConfirm={cancel} />
     </div>
   );
 }

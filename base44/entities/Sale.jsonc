@@ -61,6 +61,7 @@
       "enum": [
         "pendente",
         "emitida",
+        "cancelada",
         "nao_aplicavel"
       ],
       "default": "pendente",
@@ -77,6 +78,14 @@
     "fiscal_error": {
       "type": "string",
       "description": "\u00daltimo erro de emiss\u00e3o"
+    },
+    "fiscal_cancel_reason": {
+      "type": "string",
+      "description": "Justificativa do cancelamento (m\u00edn. 15 caracteres)"
+    },
+    "fiscal_canceled_at": {
+      "type": "string",
+      "format": "date-time"
     }
   },
   "required": [
