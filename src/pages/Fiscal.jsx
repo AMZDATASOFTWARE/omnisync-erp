@@ -9,6 +9,7 @@ import FiscalEventsCard from "@/components/fiscal/FiscalEventsCard";
 import CorrectionDialog from "@/components/fiscal/CorrectionDialog";
 import VoidNumbersDialog from "@/components/fiscal/VoidNumbersDialog";
 import FiscalExportCard from "@/components/fiscal/FiscalExportCard";
+import DanfeDialog from "@/components/fiscal/DanfeDialog";
 import { Button } from "@/components/ui/button";
 import { Receipt, RefreshCw } from "lucide-react";
 
@@ -21,6 +22,7 @@ export default function Fiscal() {
   const [reprocessing, setReprocessing] = useState(false);
   const [correctTarget, setCorrectTarget] = useState(null);
   const [voidOpen, setVoidOpen] = useState(false);
+  const [printTarget, setPrintTarget] = useState(null);
   const [events, setEvents] = useState([]);
   const { toast } = useToast();
 
@@ -147,7 +149,7 @@ export default function Fiscal() {
             ) : (
               sales.map((s) => (
                 <SaleFiscalRow key={s.id} sale={s} emitting={emittingId === s.id} onEmit={handleEmit}
-                  onCancel={setCancelTarget} onCorrect={setCorrectTarget} />
+                  onCancel={setCancelTarget} onCorrect={setCorrectTarget} onPrint={setPrintTarget} />
               ))
             )}
           </tbody>
@@ -163,6 +165,8 @@ export default function Fiscal() {
       <CorrectionDialog open={!!correctTarget} onOpenChange={(v) => !v && setCorrectTarget(null)}
         onConfirm={handleCorrect} />
       <VoidNumbersDialog open={voidOpen} onOpenChange={setVoidOpen} onConfirm={handleVoid} />
+      <DanfeDialog sale={printTarget} config={config} open={!!printTarget}
+        onOpenChange={(v) => !v && setPrintTarget(null)} />
     </div>
   );
 }
