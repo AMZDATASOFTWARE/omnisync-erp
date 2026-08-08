@@ -8,6 +8,7 @@ import FiscalPendencies from "@/components/fiscal/FiscalPendencies";
 import FiscalEventsCard from "@/components/fiscal/FiscalEventsCard";
 import CorrectionDialog from "@/components/fiscal/CorrectionDialog";
 import VoidNumbersDialog from "@/components/fiscal/VoidNumbersDialog";
+import FiscalExportCard from "@/components/fiscal/FiscalExportCard";
 import { Button } from "@/components/ui/button";
 import { Receipt, RefreshCw } from "lucide-react";
 
@@ -154,6 +155,8 @@ export default function Fiscal() {
       </div>
 
       <FiscalEventsCard events={events} onVoid={() => setVoidOpen(true)} />
+
+      <FiscalExportCard />
 
       <CancelDialog open={!!cancelTarget} onOpenChange={(v) => !v && setCancelTarget(null)}
         title="Cancelar NFC-e" onConfirm={handleCancel} />
