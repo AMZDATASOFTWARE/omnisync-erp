@@ -15,6 +15,7 @@ import MapaLoja from '@/pages/MapaLoja';
 import Clientes from '@/pages/Clientes';
 import Financeiro from '@/pages/Financeiro';
 import Mobile from '@/pages/Mobile';
+import Assistente from '@/pages/Assistente';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -50,6 +51,7 @@ const AuthenticatedApp = () => {
         <Route path="/mapa" element={<MapaLoja />} />
         <Route path="/clientes" element={<Clientes />} />
         <Route path="/financeiro" element={<Financeiro />} />
+        <Route path="/assistente" element={<Assistente />} />
       </Route>
       <Route path="/mobile" element={<Mobile />} />
       <Route path="*" element={<PageNotFound />} />
