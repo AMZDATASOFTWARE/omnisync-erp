@@ -417,6 +417,7 @@ Vendedor: "tem café pilão 500g? onde fica?"
 - **4b ✅** Motor fiscal com payload canônico, `emitFiscalDocument`, `FiscalConfig` e emissão automática no fechamento da venda (driver `sandbox`).
 - **4c 🔄** Driver SEFAZ real (NFC-e/NF-e) + SAT; certificado A1 via secret.
 - **4d ✅** Tabela de tributação por NCM/UF (`TaxRule`, tela `/tributacao`): CFOP, CSOSN/CST, alíquotas de ICMS/PIS/COFINS, CEST e marcação de ST por NCM. `buildFiscalPayload` resolve via `resolveTaxRule` na ordem NCM+UF → NCM (todas UFs) → padrão do regime, e `emitFiscalDocument` carrega as regras na emissão. Agente conectado com leitura/escrita de `TaxRule`.
+- **4f 🔄** NFS-e Padrão Nacional (gov.br): entidade `ServiceInvoice`, tela `/nfse`, geração da DPS (leiaute nacional v1.00, GZip+Base64) e chamadas diretas à API Sefin Nacional (`emitNFSe`, `consultNfseNacional`), com dados do emitente em `FiscalConfig`. Pendente: a autorização da API exige mTLS com certificado ICP-Brasil A1, não suportado pelo runtime — necessário um intermediário que apresente o certificado.
 - **4e 🔄** Canal WhatsApp do agente + imagem de localização gerada server-side.
 - **Critério de aceite:** documento autorizado pela SEFAZ em homologação e reprocessamento de fila sem duplicidade.
 

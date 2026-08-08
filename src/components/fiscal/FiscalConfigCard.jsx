@@ -48,6 +48,36 @@ export default function FiscalConfigCard({ config, onSave }) {
           </SelectContent>
         </Select>
       </div>
+      <div className="md:col-span-3 pt-2 border-t">
+        <p className="font-medium text-sm">NFS-e — Padrão Nacional (gov.br)</p>
+        <p className="text-xs text-muted-foreground">Dados exigidos pela API nacional de nota de serviço.</p>
+      </div>
+      <div className="space-y-1.5">
+        <Label>Inscrição municipal</Label>
+        <Input value={form.inscricao_municipal || ""} onChange={(e) => set("inscricao_municipal", e.target.value)} />
+      </div>
+      <div className="space-y-1.5">
+        <Label>Município (código IBGE)</Label>
+        <Input maxLength={7} value={form.municipio_ibge || ""} onChange={(e) => set("municipio_ibge", e.target.value)} />
+      </div>
+      <div className="space-y-1.5">
+        <Label>Ambiente NFS-e</Label>
+        <Select value={form.nfse_ambiente || "producao_restrita"} onValueChange={(v) => set("nfse_ambiente", v)}>
+          <SelectTrigger><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="producao_restrita">Produção restrita (homologação)</SelectItem>
+            <SelectItem value="producao">Produção</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="space-y-1.5">
+        <Label>Código de serviço padrão</Label>
+        <Input value={form.nfse_codigo_servico_padrao || ""} onChange={(e) => set("nfse_codigo_servico_padrao", e.target.value)} placeholder="ex: 010101" />
+      </div>
+      <div className="space-y-1.5">
+        <Label>Alíquota ISS padrão (%)</Label>
+        <Input type="number" step="0.01" value={form.nfse_aliquota_iss ?? ""} onChange={(e) => set("nfse_aliquota_iss", Number(e.target.value))} />
+      </div>
       <div className="flex items-end">
         <Button type="submit" disabled={saving}>{saving ? "Salvando..." : "Salvar configurações"}</Button>
       </div>

@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, NavLink } from "react-router-dom";
-import { LayoutDashboard, ShoppingCart, Box, MapPin, Users, Banknote, Smartphone, Sparkles, FileText, Truck, Clock, ClipboardCheck, BarChart3, Store, Percent } from "lucide-react";
+import { LayoutDashboard, ShoppingCart, Box, MapPin, Users, Banknote, Smartphone, Sparkles, FileText, Truck, Clock, ClipboardCheck, BarChart3, Store, Percent, FileSignature } from "lucide-react";
 import BrandMark from "@/components/BrandMark";
 import ThemeToggle from "@/components/ThemeToggle";
 import StoreSwitcher from "@/components/StoreSwitcher";
@@ -17,6 +17,7 @@ const nav = [
   { to: "/financeiro", label: "Financeiro", icon: Banknote },
   { to: "/fiscal", label: "Fiscal", icon: FileText },
   { to: "/tributacao", label: "Tributação NCM", icon: Percent },
+  { to: "/nfse", label: "NFS-e Nacional", icon: FileSignature },
   { to: "/relatorios", label: "Relatórios", icon: BarChart3 },
   { to: "/lojas", label: "Unidades", icon: Store },
   { to: "/mobile", label: "Consulta Rápida", icon: Smartphone },

@@ -11,6 +11,14 @@
     "inscricao_estadual": {
       "type": "string"
     },
+    "inscricao_municipal": {
+      "type": "string",
+      "description": "Inscri\u00e7\u00e3o municipal (obrigat\u00f3ria para NFS-e)"
+    },
+    "municipio_ibge": {
+      "type": "string",
+      "description": "C\u00f3digo IBGE do munic\u00edpio do emitente (7 d\u00edgitos)"
+    },
     "uf": {
       "type": "string",
       "default": "CE"
@@ -29,7 +37,25 @@
         "sandbox"
       ],
       "default": "sandbox",
-      "description": "Emissor fiscal utilizado"
+      "description": "Emissor fiscal utilizado para NFC-e"
+    },
+    "nfse_ambiente": {
+      "type": "string",
+      "enum": [
+        "producao_restrita",
+        "producao"
+      ],
+      "default": "producao_restrita",
+      "description": "Ambiente da API do Padr\u00e3o Nacional da NFS-e"
+    },
+    "nfse_codigo_servico_padrao": {
+      "type": "string",
+      "description": "C\u00f3digo de tributa\u00e7\u00e3o nacional do servi\u00e7o usado por padr\u00e3o"
+    },
+    "nfse_aliquota_iss": {
+      "type": "number",
+      "default": 0,
+      "description": "Al\u00edquota de ISS padr\u00e3o em %"
     }
   },
   "required": []

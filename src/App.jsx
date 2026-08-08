@@ -23,6 +23,7 @@ import Inventario from '@/pages/Inventario';
 import Relatorios from '@/pages/Relatorios';
 import Lojas from '@/pages/Lojas';
 import Tributacao from '@/pages/Tributacao';
+import NFSe from '@/pages/NFSe';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -66,6 +67,7 @@ const AuthenticatedApp = () => {
         <Route path="/relatorios" element={<Relatorios />} />
         <Route path="/lojas" element={<Lojas />} />
         <Route path="/tributacao" element={<Tributacao />} />
+        <Route path="/nfse" element={<NFSe />} />
       </Route>
       <Route path="/mobile" element={<Mobile />} />
       <Route path="*" element={<PageNotFound />} />
