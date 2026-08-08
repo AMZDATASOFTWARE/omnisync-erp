@@ -69,6 +69,14 @@ export default function MapaLoja() {
     });
   };
 
+  const resetMap = () => {
+    if (!window.confirm("Resetar o mapa? Todas as zonas e gôndolas desenhadas serão apagadas. As alocações de produtos não são afetadas.")) return;
+    setSelectedZoneId(null);
+    setSelectedShelfId(null);
+    setHighlight(null);
+    persist({ ...map, zones: [], shelves: [] });
+  };
+
   const moveShelf = (shelfId, x, y) => {
     persist({ ...map, shelves: (map.shelves || []).map((s) => (s.id === shelfId ? { ...s, x, y } : s)) });
   };
@@ -153,6 +161,12 @@ export default function MapaLoja() {
             {saving && <span className="text-emerald-600 ml-2">Salvando…</span>}
           </p>
         </div>
+        <button
+          onClick={resetMap}
+          className="text-xs px-3 py-2 rounded-lg border border-red-200 text-red-600 hover:bg-red-50"
+        >
+          Resetar mapa
+        </button>
         {highlight?.name && (
           <div className="text-xs bg-emerald-50 text-emerald-700 rounded-lg px-3 py-2">
             Destacando: <strong>{highlight.name}</strong>
