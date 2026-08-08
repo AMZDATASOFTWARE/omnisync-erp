@@ -14,12 +14,15 @@ export default function MapaLoja() {
   const [saving, setSaving] = useState(false);
   const [highlight, setHighlight] = useState(null); // { zoneId, pin, name, shelfId }
   const [selectedShelfId, setSelectedShelfId] = useState(null);
+  const [placements, setPlacements] = useState([]);
 
   useEffect(() => {
     Promise.all([
       base44.entities.StoreMap.list("", 1),
       base44.entities.Product.list("name", 500),
-    ]).then(async ([maps, prods]) => {
+      base44.entities.ProductPlacement.list("", 500),
+    ]).then(async ([maps, prods, places]) => {
+      setPlacements(places);
       let m = maps[0];
       if (!m) m = await base44.entities.StoreMap.create({ name: "Loja Principal", cols: 20, rows: 12, zones: [] });
       setMap(m);
@@ -55,30 +58,65 @@ export default function MapaLoja() {
   };
 
   const linkProduct = async (product, zone, shelf, level) => {
-    const patch = {
+    const isFirst = !placements.some((pl) => pl.product_id === product.id);
+    const created = await base44.entities.ProductPlacement.create({
+      product_id: product.id,
+      product_name: product.name,
+      sku: product.sku || "",
       zone_id: zone.id,
-      map_zone_id: zone.id,
-      shelf_identifier: shelf ? shelf.label : product.shelf_identifier || zone.label,
-      pos_z: level || 0,
-    };
-    setProducts((ps) => ps.map((p) => (p.id === product.id ? { ...p, ...patch } : p)));
-    await base44.entities.Product.update(product.id, patch);
+      zone_label: zone.label,
+      shelf_id: shelf?.id || "",
+      shelf_label: shelf?.label || "",
+      level: level || null,
+      is_primary: isFirst,
+    });
+    setPlacements((ps) => [...ps, created]);
+
+    if (isFirst) {
+      const patch = {
+        zone_id: zone.id,
+        map_zone_id: zone.id,
+        shelf_identifier: shelf ? shelf.label : zone.label,
+        pos_z: level || 0,
+      };
+      setProducts((ps) => ps.map((p) => (p.id === product.id ? { ...p, ...patch } : p)));
+      await base44.entities.Product.update(product.id, patch);
+    }
   };
 
-  const unlinkProduct = async (product) => {
-    const patch = { zone_id: "", map_zone_id: "" };
-    setProducts((ps) => ps.map((p) => (p.id === product.id ? { ...p, ...patch } : p)));
-    await base44.entities.Product.update(product.id, patch);
+  // Remove uma posição; se era a principal, promove a próxima (ou limpa o produto)
+  const unlinkProduct = async (placement) => {
+    const rest = placements.filter((pl) => pl.id !== placement.id);
+    setPlacements(rest);
+    await base44.entities.ProductPlacement.delete(placement.id);
+
+    if (!placement.is_primary) return;
+    const next = rest.find((pl) => pl.product_id === placement.product_id);
+    if (next) {
+      await base44.entities.ProductPlacement.update(next.id, { is_primary: true });
+      setPlacements((ps) => ps.map((pl) => (pl.id === next.id ? { ...pl, is_primary: true } : pl)));
+    }
+    const patch = next
+      ? { zone_id: next.zone_id, map_zone_id: next.zone_id, shelf_identifier: next.shelf_label || "", pos_z: next.level || 0 }
+      : { zone_id: "", map_zone_id: "", shelf_identifier: "", pos_z: 0 };
+    setProducts((ps) => ps.map((p) => (p.id === placement.product_id ? { ...p, ...patch } : p)));
+    await base44.entities.Product.update(placement.product_id, patch);
   };
 
-  const highlightProduct = (product) => {
-    const zoneId = product.zone_id || product.map_zone_id;
+  // Aceita tanto um produto quanto uma posição (ProductPlacement)
+  const highlightProduct = (item) => {
+    const isPlacement = !!item.product_id;
+    const zoneId = isPlacement ? item.zone_id : item.zone_id || item.map_zone_id;
+    const name = isPlacement ? item.product_name : item.name;
+    const shelfLabel = isPlacement ? item.shelf_label : item.shelf_identifier;
     const zone = (map.zones || []).find((z) => z.id === zoneId);
     const cell = zone?.cells?.[0];
-    const shelf = (map.shelves || []).find((s) => s.zone_id === zoneId && s.label === product.shelf_identifier);
+    const shelf = (map.shelves || []).find(
+      (s) => (isPlacement && item.shelf_id ? s.id === item.shelf_id : s.zone_id === zoneId && s.label === shelfLabel)
+    );
     setSelectedZoneId(zoneId || null);
     setHighlight({
-      zoneId, name: product.name, shelfId: shelf?.id,
+      zoneId, name, shelfId: shelf?.id,
       pin: shelf ? { x: shelf.x, y: shelf.y } : cell ? { x: cell.x, y: cell.y } : null,
     });
   };
@@ -123,6 +161,7 @@ export default function MapaLoja() {
             selectedShelfId={selectedShelfId} onSelectShelf={setSelectedShelfId} />
           <ProductLinker products={products} zone={selectedZone}
             shelves={(map.shelves || []).filter((s) => s.zone_id === selectedZone?.id)}
+            placements={placements}
             onLink={linkProduct} onUnlink={unlinkProduct} onHighlight={highlightProduct} />
         </div>
       </div>

@@ -52,6 +52,32 @@ export function productShelf(p) {
   return p.shelf_identifier || p.shelf_label || "";
 }
 
+// Formata uma posição (ProductPlacement) usando as zonas do mapa
+export function placementInfo(placement, map) {
+  const zone = map?.zones?.find((z) => z.id === placement.zone_id);
+  const shelfLabel =
+    placement.shelf_label ||
+    map?.shelves?.find((s) => s.id === placement.shelf_id)?.label ||
+    "";
+  return {
+    id: placement.id,
+    zone_id: placement.zone_id,
+    zone_label: zone?.label || placement.zone_label || "",
+    zone_type: zone?.type || "",
+    shelf_id: placement.shelf_id || "",
+    shelf_label: shelfLabel,
+    level: placement.level ?? null,
+    quantity: placement.quantity ?? null,
+    is_primary: !!placement.is_primary,
+    human_readable: humanReadable(zone || { label: placement.zone_label }, shelfLabel, placement.level),
+  };
+}
+
+// Ordena posições: principal primeiro
+export function sortPlacements(placements) {
+  return [...placements].sort((a, b) => (b.is_primary ? 1 : 0) - (a.is_primary ? 1 : 0));
+}
+
 export function productSummary(p) {
   return {
     id: p.id,

@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, MapPin, Link2, X } from "lucide-react";
 
-export default function ProductLinker({ products, zone, shelves = [], onLink, onUnlink, onHighlight }) {
+export default function ProductLinker({ products, zone, shelves = [], placements = [], onLink, onUnlink, onHighlight }) {
   const [q, setQ] = useState("");
   const [shelfId, setShelfId] = useState("");
   const [level, setLevel] = useState("");
@@ -13,7 +13,7 @@ export default function ProductLinker({ products, zone, shelves = [], onLink, on
   const results = query
     ? products.filter((p) => [p.name, p.sku, p.barcode].some((f) => (f || "").toLowerCase().includes(query))).slice(0, 8)
     : [];
-  const linked = zone ? products.filter((p) => (p.zone_id || p.map_zone_id) === zone.id) : [];
+  const linked = zone ? placements.filter((pl) => pl.zone_id === zone.id) : [];
 
   return (
     <div className="bg-white rounded-xl border border-slate-200/80 p-4 space-y-3 h-fit">
@@ -65,17 +65,15 @@ export default function ProductLinker({ products, zone, shelves = [], onLink, on
         <div className="space-y-1.5">
           <p className="text-[11px] uppercase tracking-wider text-slate-400">Alocados em {zone.label} ({linked.length})</p>
           {linked.length === 0 && <p className="text-xs text-slate-400">Nenhum produto nesta zona.</p>}
-          {linked.map((p) => (
-            <div key={p.id} className="flex items-center gap-2 text-sm py-1">
-              <button className="flex-1 text-left truncate text-slate-700 hover:text-emerald-600" onClick={() => onHighlight(p)}>
-                {p.name}
-                {p.shelf_identifier && (
-                  <span className="text-[11px] text-slate-400 ml-1.5">
-                    {p.shelf_identifier}{p.pos_z ? ` · ${p.pos_z}º nível` : ""}
-                  </span>
-                )}
+          {linked.map((pl) => (
+            <div key={pl.id} className="flex items-center gap-2 text-sm py-1">
+              <button className="flex-1 text-left truncate text-slate-700 hover:text-emerald-600" onClick={() => onHighlight(pl)}>
+                {pl.product_name}
+                <span className="text-[11px] text-slate-400 ml-1.5">
+                  {pl.shelf_label || "sem gôndola"}{pl.level ? ` · ${pl.level}º nível` : ""}{pl.is_primary ? " · principal" : ""}
+                </span>
               </button>
-              <Button variant="ghost" size="icon" className="h-6 w-6 text-rose-400" onClick={() => onUnlink(p)}>
+              <Button variant="ghost" size="icon" className="h-6 w-6 text-rose-400" onClick={() => onUnlink(pl)}>
                 <X className="w-3.5 h-3.5" />
               </Button>
             </div>

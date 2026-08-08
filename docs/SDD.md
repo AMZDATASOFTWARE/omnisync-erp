@@ -399,7 +399,8 @@ Vendedor: "tem café pilão 500g? onde fica?"
 - `MapCanvas`, `ZonePanel`, `ZoneInventory` operacionais; alocação por zona.
 - ✅ Renderização SVG com zoom/pan, alocação bidirecional de SKUs (`ProductLinker`) e deep link `/mapa?zone=&product=` com pin pulsante.
 - ✅ Gôndolas/níveis (`shelves`): criação por zona (`ShelfPanel`), reposicionamento no canvas (ferramenta “Gôndola”), alocação de SKU a gôndola + nível (`shelf_identifier` / `pos_z`) e pino no destaque.
-- 🔄 Pendente: `polygon[]` vetorial, `ProductPlacement` 1:N, `traffic_nodes` + wayfinding.
+- ✅ `ProductPlacement` 1:N: um SKU pode ocupar várias posições (zona + gôndola + nível), com posição principal (`is_primary`) espelhada em `Product` e promoção automática ao remover a principal. `getProductLocation` retorna `placements` e `other_locations`.
+- 🔄 Pendente: `polygon[]` vetorial, `traffic_nodes` + wayfinding, cache offline PWA.
 - **Critério de aceite:** localizar qualquer SKU cadastrado em ≤ 2 cliques a partir do mapa.
 
 ### Fase 3 — Mobile Fast & PDV ✅
