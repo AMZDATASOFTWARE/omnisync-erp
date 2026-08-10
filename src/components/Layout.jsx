@@ -3,6 +3,7 @@ import { Outlet, NavLink } from "react-router-dom";
 import { LayoutDashboard, ShoppingCart, Box, MapPin, Users, Banknote, Smartphone, Sparkles, FileText, Truck, Clock, ClipboardCheck, BarChart3, Store, Percent, FileSignature, UserCircle } from "lucide-react";
 import BrandMark from "@/components/BrandMark";
 import ThemeToggle from "@/components/ThemeToggle";
+import NotificationBell from "@/components/NotificationBell";
 import StoreSwitcher from "@/components/StoreSwitcher";
 
 const nav = [
@@ -35,6 +36,7 @@ export default function Layout() {
             <p className="font-heading font-bold text-foreground text-lg">OmniSync ERP</p>
             <p className="text-[11px] uppercase tracking-widest text-muted-foreground">ERP & Frente de Caixa</p>
           </div>
+          <NotificationBell />
           <ThemeToggle />
         </div>
         <StoreSwitcher />
@@ -58,6 +60,7 @@ export default function Layout() {
         <div className="px-4 py-3 flex items-center gap-2">
           <BrandMark size={22} />
           <p className="font-heading font-bold text-foreground flex-1">OmniSync ERP</p>
+          <NotificationBell />
           <ThemeToggle />
         </div>
         <nav className="flex overflow-x-auto px-2 pb-2 gap-1">
