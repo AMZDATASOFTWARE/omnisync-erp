@@ -7,6 +7,7 @@ import { MapPin } from "lucide-react";
 import CountSheet from "@/components/inventario/CountSheet";
 import CountHistory from "@/components/inventario/CountHistory";
 import { withStore, ofStore } from "@/lib/scope";
+import { useOperator } from "@/hooks/use-operator";
 
 export default function Inventario() {
   const [map, setMap] = useState(null);
@@ -16,6 +17,7 @@ export default function Inventario() {
   const [counts, setCounts] = useState({});
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { label: operatorName } = useOperator();
 
   useEffect(() => {
     Promise.all([
@@ -50,6 +52,7 @@ export default function Inventario() {
     const divergent = rows.filter((r) => r.diff !== 0);
     const record = await base44.entities.InventoryCount.create(withStore({
       zone_id: zoneId, zone_label: zone?.label || "", status: "finalizada",
+      operator: operatorName,
       started_at: new Date().toISOString(), finished_at: new Date().toISOString(),
       items: rows, items_count: rows.length, divergences: divergent.length,
       value_diff: divergent.reduce((s, r) => {

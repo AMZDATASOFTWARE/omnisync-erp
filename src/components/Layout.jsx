@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, NavLink } from "react-router-dom";
-import { LayoutDashboard, ShoppingCart, Box, MapPin, Users, Banknote, Smartphone, Sparkles, FileText, Truck, Clock, ClipboardCheck, BarChart3, Store, Percent, FileSignature } from "lucide-react";
+import { LayoutDashboard, ShoppingCart, Box, MapPin, Users, Banknote, Smartphone, Sparkles, FileText, Truck, Clock, ClipboardCheck, BarChart3, Store, Percent, FileSignature, UserCircle } from "lucide-react";
 import BrandMark from "@/components/BrandMark";
 import ThemeToggle from "@/components/ThemeToggle";
 import StoreSwitcher from "@/components/StoreSwitcher";
@@ -22,6 +22,7 @@ const nav = [
   { to: "/lojas", label: "Unidades", icon: Store },
   { to: "/mobile", label: "Consulta Rápida", icon: Smartphone },
   { to: "/assistente", label: "Assistente IA", icon: Sparkles },
+  { to: "/perfil", label: "Meu Perfil", icon: UserCircle },
 ];
 
 export default function Layout() {
