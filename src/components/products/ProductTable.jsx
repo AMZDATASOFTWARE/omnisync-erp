@@ -2,7 +2,8 @@ import React from "react";
 import { brl } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, MapPin } from "lucide-react";
+import { Pencil, Trash2, MapPin, Package } from "lucide-react";
+import { Image } from "@/components/ui/image";
 
 export default function ProductTable({ products, map, onEdit, onDelete }) {
   const zoneLabel = (id) => map?.zones?.find((z) => z.id === id)?.label;
@@ -33,8 +34,19 @@ export default function ProductTable({ products, map, onEdit, onDelete }) {
             return (
               <tr key={p.id} className="border-b border-slate-50 hover:bg-slate-50/60">
                 <td className="px-4 py-3">
-                  <p className="font-medium text-slate-800">{p.name}</p>
-                  {p.brand && <p className="text-xs text-slate-400">{p.brand}</p>}
+                  <div className="flex items-center gap-3">
+                    {p.image_url ? (
+                      <Image src={p.image_url} alt={p.name} className="w-10 h-10 rounded-md border border-slate-200 object-cover flex-shrink-0" />
+                    ) : (
+                      <div className="w-10 h-10 rounded-md border border-slate-100 bg-slate-50 flex items-center justify-center flex-shrink-0">
+                        <Package className="w-4 h-4 text-slate-300" />
+                      </div>
+                    )}
+                    <div>
+                      <p className="font-medium text-slate-800">{p.name}</p>
+                      {p.brand && <p className="text-xs text-slate-400">{p.brand}</p>}
+                    </div>
+                  </div>
                 </td>
                 <td className="px-4 py-3 text-slate-500 font-mono text-xs">{p.sku || "—"}<br />{p.barcode || ""}</td>
                 <td className="px-4 py-3 text-slate-600">{p.category || "—"}</td>

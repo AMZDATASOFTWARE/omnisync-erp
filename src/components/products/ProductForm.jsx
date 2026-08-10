@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import ProductFiscalFields from "./ProductFiscalFields";
 import ProductLocationFields from "./ProductLocationFields";
 import ProductDataLookup from "./ProductDataLookup";
+import ProductImageField from "./ProductImageField";
 
 const UNITS = ["un", "kg", "g", "l", "ml", "m", "m2", "cx", "pct"];
 
@@ -19,6 +20,7 @@ const Field = ({ label, children, className = "" }) => (
 export default function ProductForm({ product, map, onSave, onCancel }) {
   const [f, setF] = useState({
     name: product?.name || "",
+    image_url: product?.image_url || "",
     sku: product?.sku || "",
     barcode: product?.barcode || "",
     category: product?.category || "",
@@ -83,6 +85,9 @@ export default function ProductForm({ product, map, onSave, onCancel }) {
         }))}
       />
       <div className="grid grid-cols-2 gap-3">
+        <Field label="Foto" className="col-span-2">
+          <ProductImageField value={f.image_url} onChange={(url) => setF((prev) => ({ ...prev, image_url: url }))} />
+        </Field>
         <Field label="Nome *" className="col-span-2">
           <Input required value={f.name} onChange={set("name")} placeholder="Ex: Chave Phillips 16mm Thompson" />
         </Field>

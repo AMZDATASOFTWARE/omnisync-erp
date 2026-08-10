@@ -10,6 +10,10 @@
       "type": "string",
       "description": "Nome do produto"
     },
+    "image_url": {
+      "type": "string",
+      "description": "URL da foto do produto"
+    },
     "sku": {
       "type": "string",
       "description": "C\u00f3digo interno"
