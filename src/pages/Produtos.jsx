@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { Plus, Search } from "lucide-react";
+import { Plus } from "lucide-react";
 import ProductTable from "@/components/products/ProductTable";
+import ProductFilters from "@/components/products/ProductFilters";
+import { DEFAULT_PRODUCT_FILTERS, filterProducts } from "@/lib/product-filters";
 import ProductForm from "@/components/products/ProductForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { withStore, ofStore } from "@/lib/scope";
@@ -9,7 +11,7 @@ import { withStore, ofStore } from "@/lib/scope";
 export default function Produtos() {
   const [products, setProducts] = useState([]);
   const [map, setMap] = useState(null);
-  const [search, setSearch] = useState("");
+  const [filters, setFilters] = useState(DEFAULT_PRODUCT_FILTERS);
   const [editing, setEditing] = useState(null);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -37,10 +39,8 @@ export default function Produtos() {
     load();
   };
 
-  const q = search.toLowerCase();
-  const filtered = products.filter((p) =>
-    [p.name, p.sku, p.barcode, p.category, p.brand].some((f) => (f || "").toLowerCase().includes(q))
-  );
+  const filtered = filterProducts(products, filters);
+  const uniq = (key) => [...new Set(products.map((p) => p[key]).filter(Boolean))].sort();
 
   return (
     <div className="p-6 md:p-8 space-y-5">
@@ -54,11 +54,9 @@ export default function Produtos() {
         </button>
       </div>
 
-      <div className="relative max-w-md">
-        <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-        <input value={search} onChange={(e) => setSearch(e.target.value)}
-          placeholder="Buscar por nome, código, marca, categoria…" className="brand-input pl-9" />
-      </div>
+      <ProductFilters filters={filters} onChange={setFilters}
+        categories={uniq("category")} brands={uniq("brand")} zones={map?.zones || []}
+        count={filtered.length} total={products.length} />
 
       {loading ? (
         <p className="text-sm text-slate-400">Carregando produtos…</p>
