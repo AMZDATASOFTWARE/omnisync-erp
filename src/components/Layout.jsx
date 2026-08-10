@@ -1,59 +1,57 @@
-import React from "react";
+import React, { useState } from "react";
 import { Outlet, NavLink } from "react-router-dom";
-import { LayoutDashboard, ShoppingCart, Box, MapPin, Users, Banknote, Smartphone, Sparkles, FileText, Truck, Clock, ClipboardCheck, BarChart3, Store, Percent, FileSignature, UserCircle } from "lucide-react";
+import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import BrandMark from "@/components/BrandMark";
 import ThemeToggle from "@/components/ThemeToggle";
 import NotificationBell from "@/components/NotificationBell";
 import StoreSwitcher from "@/components/StoreSwitcher";
-
-const nav = [
-  { to: "/", label: "Visão Geral", icon: LayoutDashboard },
-  { to: "/pdv", label: "PDV — Caixa", icon: ShoppingCart },
-  { to: "/produtos", label: "Estoque", icon: Box },
-  { to: "/lotes", label: "Lotes & Validade", icon: Clock },
-  { to: "/mapa", label: "Mapa da Loja", icon: MapPin },
-  { to: "/inventario", label: "Inventário", icon: ClipboardCheck },
-  { to: "/compras", label: "Compras", icon: Truck },
-  { to: "/clientes", label: "Clientes", icon: Users },
-  { to: "/financeiro", label: "Financeiro", icon: Banknote },
-  { to: "/fiscal", label: "Fiscal", icon: FileText },
-  { to: "/tributacao", label: "Tributação NCM", icon: Percent },
-  { to: "/nfse", label: "NFS-e Nacional", icon: FileSignature },
-  { to: "/relatorios", label: "Relatórios", icon: BarChart3 },
-  { to: "/lojas", label: "Unidades", icon: Store },
-  { to: "/mobile", label: "Consulta Rápida", icon: Smartphone },
-  { to: "/assistente", label: "Assistente IA", icon: Sparkles },
-  { to: "/perfil", label: "Meu Perfil", icon: UserCircle },
-];
+import SidebarNav from "@/components/nav/SidebarNav";
+import { allItems } from "@/components/nav/nav-config";
 
 export default function Layout() {
+  const [collapsed, setCollapsed] = useState(() => localStorage.getItem("sidebar_collapsed") === "1");
+
+  const toggle = () => {
+    setCollapsed((c) => {
+      localStorage.setItem("sidebar_collapsed", c ? "0" : "1");
+      return !c;
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background md:flex">
-      <aside className="hidden md:flex md:flex-col w-64 shrink-0 bg-card border-r border-border min-h-screen sticky top-0 h-screen">
-        <div className="px-6 py-6 flex items-center gap-3">
-          <BrandMark size={28} />
-          <div className="flex-1 min-w-0">
-            <p className="font-heading font-bold text-foreground text-lg">OmniSync ERP</p>
-            <p className="text-[11px] uppercase tracking-widest text-muted-foreground">ERP & Frente de Caixa</p>
-          </div>
-          <NotificationBell />
-          <ThemeToggle />
+      <aside className={`hidden md:flex md:flex-col shrink-0 bg-card border-r border-border min-h-screen sticky top-0 h-screen transition-all duration-200 ${collapsed ? "w-16" : "w-64"}`}>
+        <div className={`py-6 flex items-center gap-3 ${collapsed ? "px-3 justify-center" : "px-5"}`}>
+          <BrandMark size={collapsed ? 24 : 28} />
+          {!collapsed && (
+            <>
+              <div className="flex-1 min-w-0">
+                <p className="font-heading font-bold text-foreground text-lg">OmniSync ERP</p>
+                <p className="text-[11px] uppercase tracking-widest text-muted-foreground">ERP & Frente de Caixa</p>
+              </div>
+              <NotificationBell />
+              <ThemeToggle />
+            </>
+          )}
         </div>
-        <StoreSwitcher />
-        <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
-          {nav.map(({ to, label, icon: Icon }) => (
-            <NavLink key={to} to={to} end={to === "/"}
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-md text-sm transition-colors ${
-                  isActive
-                    ? "bg-primary/10 text-primary font-heading font-bold"
-                    : "text-muted-foreground hover:bg-primary/5 hover:text-foreground"
-                }`}>
-              <Icon className="w-4 h-4" strokeWidth={2} /> {label}
-            </NavLink>
-          ))}
-        </nav>
-        <p className="px-6 py-4 text-[11px] text-muted-foreground">v1.0 · Multissetor</p>
+
+        {collapsed && (
+          <div className="flex flex-col items-center gap-1 pb-2">
+            <NotificationBell />
+            <ThemeToggle />
+          </div>
+        )}
+
+        <button onClick={toggle} title={collapsed ? "Expandir menu" : "Recolher menu"}
+          className={`mx-2 mb-2 flex items-center gap-2 px-3 py-2 rounded-md text-xs text-muted-foreground hover:bg-primary/5 hover:text-foreground transition-colors ${collapsed ? "justify-center" : ""}`}>
+          {collapsed ? <PanelLeftOpen className="w-4 h-4" /> : <><PanelLeftClose className="w-4 h-4" /> Recolher menu</>}
+        </button>
+
+        {!collapsed && <StoreSwitcher />}
+
+        <SidebarNav collapsed={collapsed} />
+
+        {!collapsed && <p className="px-6 py-4 text-[11px] text-muted-foreground">v1.0 · Multissetor</p>}
       </aside>
 
       <div className="md:hidden sticky top-0 z-40 bg-card border-b border-border">
@@ -64,7 +62,7 @@ export default function Layout() {
           <ThemeToggle />
         </div>
         <nav className="flex overflow-x-auto px-2 pb-2 gap-1">
-          {nav.map(({ to, label, icon: Icon }) => (
+          {allItems.map(({ to, label, icon: Icon }) => (
             <NavLink key={to} to={to} end={to === "/"}
               className={({ isActive }) =>
                 `flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs whitespace-nowrap ${
