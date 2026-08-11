@@ -21,6 +21,18 @@
     "closing_amount": {
       "type": "number"
     },
+    "expected_amount": {
+      "type": "number",
+      "description": "Saldo esperado em dinheiro no fechamento (fundo + vendas em dinheiro + refor\u00e7os - sangrias)"
+    },
+    "difference": {
+      "type": "number",
+      "description": "Diferen\u00e7a apurada no fechamento (contado - esperado)"
+    },
+    "divergence_entry_id": {
+      "type": "string",
+      "description": "FinancialEntry de quebra/sobra de caixa gerado no fechamento"
+    },
     "opened_at": {
       "type": "string",
       "format": "date-time"

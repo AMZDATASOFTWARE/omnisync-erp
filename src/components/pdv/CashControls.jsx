@@ -5,24 +5,34 @@ import { Input } from "@/components/ui/input";
 import { brl } from "@/lib/format";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { ArrowDownCircle, ArrowUpCircle, Power } from "lucide-react";
+import CashClosingSummary from "@/components/pdv/CashClosingSummary";
 
 export default function CashControls({ session, onChange }) {
   const [dialog, setDialog] = useState(null); // 'sangria' | 'reforco' | 'fechar'
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
+  const [result, setResult] = useState(null); // conciliação do fechamento
+
+  const closeAll = () => {
+    const closed = !!result;
+    setDialog(null); setResult(null); setAmount(""); setNote("");
+    if (closed) onChange();
+  };
 
   const confirm = async () => {
     setSaving(true);
     if (dialog === "fechar") {
-      await base44.entities.CashSession.update(session.id, {
-        status: "fechado", closing_amount: Number(amount) || 0, closed_at: new Date().toISOString(),
+      const res = await base44.functions.invoke("processCashClosing", {
+        session_id: session.id, closing_amount: Number(amount) || 0,
       });
-    } else {
-      await base44.entities.CashMovement.create({
-        session_id: session.id, type: dialog, amount: Number(amount) || 0, note,
-      });
+      setSaving(false);
+      setResult(res.data);
+      return;
     }
+    await base44.entities.CashMovement.create({
+      session_id: session.id, type: dialog, amount: Number(amount) || 0, note,
+    });
     setSaving(false); setDialog(null); setAmount(""); setNote("");
     onChange();
   };
@@ -43,26 +53,38 @@ export default function CashControls({ session, onChange }) {
         <Power className="w-4 h-4 mr-1.5 text-slate-500" /> Fechar caixa
       </Button>
 
-      <Dialog open={!!dialog} onOpenChange={(o) => !o && setDialog(null)}>
+      <Dialog open={!!dialog} onOpenChange={(o) => !o && closeAll()}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
             <DialogTitle>
-              {dialog === "sangria" ? "Sangria (retirada)" : dialog === "reforco" ? "Reforço de caixa" : "Fechar caixa"}
+              {result ? "Caixa fechado — conciliação"
+                : dialog === "sangria" ? "Sangria (retirada)" : dialog === "reforco" ? "Reforço de caixa" : "Fechar caixa"}
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-3">
-            <Input type="number" step="0.01" min="0" autoFocus value={amount} onChange={(e) => setAmount(e.target.value)}
-              placeholder={dialog === "fechar" ? "Valor contado em caixa (R$)" : "Valor (R$)"} />
-            {dialog !== "fechar" && (
-              <Input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Observação (opcional)" />
-            )}
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setDialog(null)}>Cancelar</Button>
-            <Button onClick={confirm} disabled={saving || !amount} className="bg-emerald-600 hover:bg-emerald-700">
-              {saving ? "Confirmando…" : "Confirmar"}
-            </Button>
-          </DialogFooter>
+          {result ? (
+            <>
+              <CashClosingSummary result={result} />
+              <DialogFooter>
+                <Button onClick={closeAll} className="bg-emerald-600 hover:bg-emerald-700">Concluir</Button>
+              </DialogFooter>
+            </>
+          ) : (
+            <>
+              <div className="space-y-3">
+                <Input type="number" step="0.01" min="0" autoFocus value={amount} onChange={(e) => setAmount(e.target.value)}
+                  placeholder={dialog === "fechar" ? "Valor contado em caixa (R$)" : "Valor (R$)"} />
+                {dialog !== "fechar" && (
+                  <Input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Observação (opcional)" />
+                )}
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={closeAll}>Cancelar</Button>
+                <Button onClick={confirm} disabled={saving || !amount} className="bg-emerald-600 hover:bg-emerald-700">
+                  {saving ? "Confirmando…" : "Confirmar"}
+                </Button>
+              </DialogFooter>
+            </>
+          )}
         </DialogContent>
       </Dialog>
     </div>
